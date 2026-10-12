@@ -661,13 +661,13 @@
             <div class="eyebrow">Delivery score</div>
             <div style="font-size:13px;margin-top:4px;"><span class="delta">▲ 36 pts</span> vs the previous five lessons</div>
             <div class="dim-rows">
-              <div class="dim-row"><span class="label">Questioning</span><div class="bar-track"><div class="bar-fill" data-w="80%" style="width:0%;background:var(--indigo)"></div></div><span class="val">3.2</span></div>
-              <div class="dim-row"><span class="label">Checking</span><div class="bar-track"><div class="bar-fill" data-w="95%" style="width:0%;background:var(--green)"></div></div><span class="val">3.8</span></div>
-              <div class="dim-row"><span class="label">Modelling</span><div class="bar-track"><div class="bar-fill" data-w="90%" style="width:0%;background:var(--green)"></div></div><span class="val">3.6</span></div>
-              <div class="dim-row"><span class="label">Retrieval</span><div class="bar-track"><div class="bar-fill" data-w="65%" style="width:0%;background:var(--indigo)"></div></div><span class="val">2.6</span></div>
-              <div class="dim-row"><span class="label">Feedback</span><div class="bar-track"><div class="bar-fill" data-w="80%" style="width:0%;background:var(--indigo)"></div></div><span class="val">3.2</span></div>
-              <div class="dim-row"><span class="label">Wait time</span><div class="bar-track"><div class="bar-fill" data-w="85%" style="width:0%;background:var(--indigo)"></div></div><span class="val">3.4</span></div>
-              <div class="dim-row"><span class="label">Practice</span><div class="bar-track"><div class="bar-fill" data-w="70%" style="width:0%;background:var(--amber)"></div></div><span class="val">2.8</span></div>
+              <a class="dim-row dimension-link" href="/dimensions/questioning" aria-label="View questioning breakdown"><span class="label">Questioning</span><div class="bar-track"><div class="bar-fill" data-w="80%" style="width:0%;background:var(--indigo)"></div></div><span class="val">3.2</span></a>
+              <a class="dim-row dimension-link" href="/dimensions/checking" aria-label="View checking breakdown"><span class="label">Checking</span><div class="bar-track"><div class="bar-fill" data-w="95%" style="width:0%;background:var(--green)"></div></div><span class="val">3.8</span></a>
+              <a class="dim-row dimension-link" href="/dimensions/explanation" aria-label="View modelling breakdown"><span class="label">Modelling</span><div class="bar-track"><div class="bar-fill" data-w="90%" style="width:0%;background:var(--green)"></div></div><span class="val">3.6</span></a>
+              <a class="dim-row dimension-link" href="/dimensions/retrieval" aria-label="View retrieval breakdown"><span class="label">Retrieval</span><div class="bar-track"><div class="bar-fill" data-w="65%" style="width:0%;background:var(--indigo)"></div></div><span class="val">2.6</span></a>
+              <a class="dim-row dimension-link" href="/dimensions/feedback" aria-label="View feedback breakdown"><span class="label">Feedback</span><div class="bar-track"><div class="bar-fill" data-w="80%" style="width:0%;background:var(--indigo)"></div></div><span class="val">3.2</span></a>
+              <a class="dim-row dimension-link" href="/dimensions/waitTime" aria-label="View wait-time breakdown"><span class="label">Wait time</span><div class="bar-track"><div class="bar-fill" data-w="85%" style="width:0%;background:var(--indigo)"></div></div><span class="val">3.4</span></a>
+              <a class="dim-row dimension-link" href="/dimensions/practice" aria-label="View practice breakdown"><span class="label">Practice</span><div class="bar-track"><div class="bar-fill" data-w="70%" style="width:0%;background:var(--amber)"></div></div><span class="val">2.8</span></a>
             </div>
           </div>
         </div>
@@ -2393,4 +2393,13 @@
   });
 </script>
 
+<script>
+  if (location.port === '3001') {
+    document.querySelectorAll('.dimension-link').forEach(function (link) {
+      var target = new URL(link.getAttribute('href'), location.href);
+      target.port = '3000';
+      link.href = target.href;
+    });
+  }
+</script>
 </body></html>

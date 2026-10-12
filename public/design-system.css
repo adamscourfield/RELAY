@@ -280,3 +280,8 @@ textarea.field { padding:12px; }
 @media(max-width:600px) { .rubric-list .rubric-summary { padding:18px 16px; gap:12px; }.rubric-list .rubric-levels { padding:0 16px 18px; } }
 
 .overview-top { display:grid; grid-template-columns:minmax(0,1fr); }
+
+.dimension-link { text-decoration:none; border-radius:6px; cursor:pointer; transition:background .15s; }
+.dimension-link:hover { background:var(--cream); }
+.dimension-link:hover .label { color:var(--navy); text-decoration:underline; text-underline-offset:3px; }
+.dimension-link:focus-visible { outline:2px solid var(--heading-accent); outline-offset:4px; }

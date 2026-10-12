@@ -56,11 +56,11 @@ export default async function Dashboard() {
             </div>
             <div className="mt-5 grid gap-2.5">
               {dimAvg.map(({ d, score }) => (
-                <div key={d.id} className="grid grid-cols-[92px_1fr_28px] items-center gap-3 text-xs">
+                <Link key={d.id} href={`/dimensions/${d.id}`} aria-label={`View ${d.name} breakdown`} className="dimension-link grid grid-cols-[92px_1fr_28px] items-center gap-3 text-xs">
                   <span className="text-muted truncate">{d.short}</span>
                   <div className="dimension-track"><div className="dimension-fill" style={{width:`${score/4*100}%`,background:score>=3.5?"var(--green)":score>=3?"var(--indigo)":"var(--amber)"}} /></div>
                   <span className="tabular-nums text-right text-muted">{score.toFixed(1)}</span>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
