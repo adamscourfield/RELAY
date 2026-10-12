@@ -297,3 +297,10 @@ textarea.field { padding:12px; }
 .dimension-filters a[aria-current=page] { color:var(--navy); font-weight:600; border-bottom-color:var(--heading-accent); }
 .dimension-filters a span { font-size:11px; background:var(--well); border-radius:5px; padding:2px 6px; }
 @media(max-width:600px) { .dimension-summary { align-items:flex-start; flex-direction:column; gap:20px; }.dimension-explanation { padding-left:0; border:0; }.dimension-filters { gap:18px; } }
+
+.dimension-scoring-guide { margin-bottom:32px; border-top:1px solid var(--line); }
+.dimension-scoring-row { display:grid; grid-template-columns:28px 120px minmax(0,1fr); align-items:baseline; gap:16px; padding:16px 0; border-bottom:1px solid var(--line); }
+.dimension-level-number { font-family:var(--font-mono); font-size:12px; color:var(--muted); }
+.dimension-scoring-row h3 { font-size:13px; font-weight:600; color:var(--navy); }
+.dimension-scoring-row p { font-size:13px; color:var(--muted); line-height:1.6; }
+@media(max-width:600px) { .dimension-scoring-row { grid-template-columns:24px minmax(0,1fr); gap:6px 12px; }.dimension-scoring-row p { grid-column:2; } }

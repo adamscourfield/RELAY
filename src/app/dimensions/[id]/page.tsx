@@ -28,8 +28,8 @@ export default async function DimensionPage({ params, searchParams }: { params: 
       <div className="dimension-explanation"><p>{dimension.evidence}</p><span className="text-xs text-muted">Explore the scoring guide and evidence from your lessons below.</span></div>
     </div>
     <h2 className="text-lg font-semibold mb-3">How this is scored</h2>
-    <div className="grid min-[700px]:grid-cols-4 gap-3 mb-8">
-      {dimension.levels.map((description, i) => <div key={i} className="glass p-4"><h3 className="text-sm font-semibold" style={{ color: levelColor(i + 1) }}>{i + 1} · {LEVEL_NAMES[i]}</h3><p className="text-sm text-muted mt-2">{description}</p></div>)}
+    <div className="dimension-scoring-guide">
+      {dimension.levels.map((description, i) => <div key={i} className="dimension-scoring-row"><span className="dimension-level-number">{i + 1}</span><h3>{LEVEL_NAMES[i]}</h3><p>{description}</p></div>)}
     </div>
     <h2 className="text-lg font-semibold mb-3">Lesson breakdown</h2>
     <nav className="dimension-filters" aria-label="Filter by dimension score">
