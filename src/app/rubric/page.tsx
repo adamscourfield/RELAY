@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import { RUBRIC, LEVEL_NAMES } from "@/lib/rubric";
 import { PageHeader, levelColor } from "@/components/ui";
 
@@ -18,26 +19,24 @@ export default function RubricPage() {
       </p>
       <div className="flex flex-col gap-4">
         {RUBRIC.map((d, i) => (
-          <article
+          <details
             key={d.id}
-            className="glass p-[18px] rise"
+            className="glass rubric-disclosure rise"
             style={{ animationDelay: `${i * 40}ms` }}
           >
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+            <summary className="rubric-summary">
               <div>
                 <h2 className="text-[16px] font-semibold">{d.name}</h2>
                 <p className="text-sm text-muted mt-1 max-w-2xl">
                   {d.evidence}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2 shrink-0">
-                <span className="chip">weight ×{d.weight}</span>
-                <span className="chip">
-                  audio reliability: {d.audioReliability}
-                </span>
+              <div className="rubric-summary-meta">
+                <span>Weight ×{d.weight} · Audio: {d.audioReliability}</span>
+                <ChevronDown size={18} className="rubric-chevron" aria-hidden="true" />
               </div>
-            </div>
-            <div className="mt-4 grid min-[700px]:grid-cols-4 gap-3">
+            </summary>
+            <div className="rubric-levels grid min-[700px]:grid-cols-4 gap-3">
               {d.levels.map((l, li) => (
                 <div
                   key={li}
@@ -55,14 +54,7 @@ export default function RubricPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {d.sources.map((s) => (
-                <span key={s} className="chip !whitespace-normal !h-auto !py-1">
-                  {s}
-                </span>
-              ))}
-            </div>
-          </article>
+          </details>
         ))}
       </div>
     </>

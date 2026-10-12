@@ -29,3 +29,7 @@ Prototype: `python3 -m http.server 3001 --bind 127.0.0.1 --directory public` →
 ## Verification
 
 ESLint and a production build passed. The shared stylesheet parses, prototype inline JavaScript parses, and original prototype font-loading links/stacks match exactly. Both preview pages and their stylesheet return HTTP 200. A fresh interactive visual/keyboard audit is still needed; browser automation tools were unavailable during this change. This is not an accessibility certification.
+
+## Rubric and wordmark refinement
+
+RELAY uses an 18px tracked wordmark and a 32px logo mark. Rubric dimensions use native details/summary controls, collapsed by default and independently expandable with mouse or keyboard. Research-source pills are removed from the rubric view; weight and audio reliability remain as quiet text. The underlying research definitions remain unchanged. Applied to both the app and styled prototype. Lint, TypeScript, stylesheet/script parsing and rendered disclosure markup checks passed.

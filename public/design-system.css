@@ -44,7 +44,7 @@ body { background:var(--cream); color:var(--navy); line-height:1.6; }
 h1,h2,h3 { overflow-wrap:anywhere; }
 :focus-visible { outline:3px solid var(--heading-accent); outline-offset:3px; }
 .logo-mark { background:var(--navy); border-radius:12px; }
-.logo-name,.cadence-wordmark { font-size:26px; font-weight:600; letter-spacing:-1px; }
+.logo-name,.cadence-wordmark { font-size:18px; font-weight:650; letter-spacing:.12em; line-height:1; }
 .sidebar,.shell-sidebar { width:232px; padding:28px 16px; gap:32px; background:var(--cream); }
 .nav,.shell-nav { gap:2px; }
 .nav-item,.shell-nav a { height:48px; min-height:48px; padding:0 14px; border-radius:12px; font-size:13px; }
@@ -181,3 +181,26 @@ textarea.field { padding:12px; }
 @media (max-width:699px) { .level-grid { grid-template-columns:minmax(0,1fr); } }
 @media (max-width:600px) { .metric-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; } }
 @media (prefers-reduced-motion:reduce) { .anim-grow { opacity:1 !important; transform:none !important; } }
+
+/* Compact brand and progressive disclosure for the rubric. */
+.logo-mark,.relay-logo-mark { width:32px; height:32px; border-radius:10px; }
+.rubric-disclosure.card,.rubric-disclosure.glass { padding:0; overflow:hidden; }
+.rubric-summary { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:22px 24px; cursor:pointer; list-style:none; border-radius:18px; }
+.rubric-summary::-webkit-details-marker { display:none; }
+.rubric-summary::marker { content:""; }
+.rubric-summary:hover { background:var(--cream); }
+.rubric-summary:focus-visible { outline-offset:-4px; }
+.rubric-summary h2 { font-size:16px; font-weight:600; }
+.rubric-summary p { margin:6px 0 0; font-size:13px; line-height:1.6; max-width:640px; }
+.rubric-summary-meta { display:flex; align-items:center; gap:20px; flex-shrink:0; font-size:11px; color:var(--muted); }
+.rubric-chevron { flex-shrink:0; color:var(--navy); transition:transform .2s ease; }
+.rubric-disclosure[open] > .rubric-summary .rubric-chevron { transform:rotate(180deg); }
+.rubric-disclosure[open] > .rubric-summary { border-bottom:1px solid var(--line); border-radius:18px 18px 0 0; }
+.rubric-disclosure .rubric-levels { margin:0; padding:20px 24px 24px; }
+@media(max-width:1000px) { .rubric-summary { align-items:flex-start; gap:16px; }.rubric-summary-meta span { max-width:100px; } }
+@media(max-width:600px) {
+  .rubric-summary { padding:18px; flex-direction:column; gap:12px; }
+  .rubric-summary-meta { width:100%; justify-content:space-between; }
+  .rubric-summary-meta span { max-width:none; }
+  .rubric-disclosure .rubric-levels { padding:18px; }
+}

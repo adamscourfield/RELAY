@@ -43,7 +43,7 @@ function isActive(pathname: string, href: string) {
 export function Logo() {
   return (
     <Link href="/" className="flex items-center gap-3 px-2 group">
-      <span className="relative grid place-items-center size-9 shrink-0 rounded-[10px] bg-[linear-gradient(135deg,var(--ink),var(--ink-2))] transition-transform group-hover:scale-105">
+      <span className="relay-logo-mark relative grid place-items-center size-9 shrink-0 rounded-[10px] bg-[linear-gradient(135deg,var(--ink),var(--ink-2))] transition-transform group-hover:scale-105">
         <svg width="22" height="22" viewBox="0 0 56 56" fill="none">
           <path
             d="M10 40 L28 16 L46 40"
