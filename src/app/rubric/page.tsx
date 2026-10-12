@@ -17,22 +17,22 @@ export default function RubricPage() {
         transcript. Weights reflect how reliably each can be judged from audio,
         not how much it matters.
       </p>
-      <div className="flex flex-col gap-4">
+      <div className="rubric-list">
         {RUBRIC.map((d, i) => (
           <details
             key={d.id}
-            className="glass rubric-disclosure rise"
+            className="rubric-disclosure rise"
             style={{ animationDelay: `${i * 40}ms` }}
           >
             <summary className="rubric-summary">
-              <div>
+              <span className="rubric-number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              <div className="rubric-summary-copy">
                 <h2 className="text-[16px] font-semibold">{d.name}</h2>
                 <p className="text-sm text-muted mt-1 max-w-2xl">
                   {d.evidence}
                 </p>
               </div>
               <div className="rubric-summary-meta">
-                <span>Weight ×{d.weight} · Audio: {d.audioReliability}</span>
                 <ChevronDown size={18} className="rubric-chevron" aria-hidden="true" />
               </div>
             </summary>

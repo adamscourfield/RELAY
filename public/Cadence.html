@@ -698,22 +698,22 @@
           <div class="lesson-row">
             <div class="score-pill" style="border-color:var(--green);color:var(--green);">92</div>
             <div class="meta"><div class="title">The Industrial Revolution and public health</div><div class="sub">History · Year 10 · 21 Sept · 20 min</div></div>
-            <span class="chip">demo</span><span class="chip">no exit ticket</span>
+            <span class="chip">no exit ticket</span>
           </div>
           <div class="lesson-row">
             <div class="score-pill" style="border-color:var(--indigo);color:var(--indigo);">55</div>
             <div class="meta"><div class="title">Balancing chemical equations</div><div class="sub">Science · Year 9 · 18 Sept · 25 min</div></div>
-            <span class="chip">demo</span><span class="chip" style="color:var(--coral);border-color:var(--coral)">35% mastery</span>
+            <span class="chip" style="color:var(--coral);border-color:var(--coral)">35% mastery</span>
           </div>
           <div class="lesson-row">
             <div class="score-pill" style="border-color:var(--amber);color:var(--amber);">43</div>
             <div class="meta"><div class="title">Ratio and proportion problems</div><div class="sub">Maths · Year 8 · 14 Sept · 28 min</div></div>
-            <span class="chip">demo</span><span class="chip" style="color:var(--coral);border-color:var(--coral)">42% mastery</span>
+            <span class="chip" style="color:var(--coral);border-color:var(--coral)">42% mastery</span>
           </div>
           <div class="lesson-row">
             <div class="score-pill" style="border-color:var(--green);color:var(--green);">92</div>
             <div class="meta"><div class="title">Plate boundaries and hazards</div><div class="sub">Geography · Year 7 · 11 Sept · 20 min</div></div>
-            <span class="chip">demo</span><span class="chip" style="color:var(--coral);border-color:var(--coral)">65% mastery</span>
+            <span class="chip" style="color:var(--coral);border-color:var(--coral)">65% mastery</span>
           </div>
         </div>
         <div class="card loop-panel">
@@ -1278,7 +1278,7 @@
       <p style="font-size:13.5px;color:var(--muted);max-width:640px;margin:-18px 0 22px;">
         RELAY scores seven dimensions drawn from well-replicated research on effective instruction. Each is scored 1–4 with quoted evidence from the transcript. Weights reflect how reliably each can be judged from audio, not how much it matters.
       </p>
-      <div id="rubric-list" style="display:flex;flex-direction:column;gap:14px;"></div>
+      <div id="rubric-list" class="rubric-list"></div>
     </section>
 
     <!-- ===================== IMPORT ===================== -->
@@ -1737,13 +1737,13 @@
   function renderRubric() {
     var root = document.getElementById('rubric-list');
     if (!root) return;
-    root.innerHTML = RUBRIC.map(function (d) {
+    root.innerHTML = RUBRIC.map(function (d, i) {
       var levels = d.levels.map(function (l, li) {
         return '<div class="level-card"><div class="lc-title" style="color:' + LEVEL_COLOR[li] + '">' + (li + 1) + ' · ' + LEVEL_NAMES[li] + '</div><div class="lc-desc">' + l + '</div></div>';
       }).join('');
-      return '<details class="card rubric-article rubric-disclosure anim-fade">' +
-        '<summary class="rubric-summary"><div><h2>' + d.name + '</h2><p class="revidence">' + d.evidence + '</p></div>' +
-        '<div class="rubric-summary-meta"><span>Weight ×' + d.weight + ' · Audio: ' + d.reliability + '</span>' +
+      return '<details class="rubric-article rubric-disclosure anim-fade">' +
+        '<summary class="rubric-summary"><span class="rubric-number" aria-hidden="true">' + String(i + 1).padStart(2, '0') + '</span><div class="rubric-summary-copy"><h2>' + d.name + '</h2><p class="revidence">' + d.evidence + '</p></div>' +
+        '<div class="rubric-summary-meta">' +
         '<svg class="rubric-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></div></summary>' +
         '<div class="level-grid rubric-levels">' + levels + '</div>' +
       '</details>';

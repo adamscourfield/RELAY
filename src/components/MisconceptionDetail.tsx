@@ -49,9 +49,6 @@ export function MisconceptionDetail({ group }: { group: MisconceptionGroup }) {
             <span className="review-avatar">{e.student[0]}</span>
             <div className="min-w-0">
               <b>{e.student}</b>
-              {e.provenance === "demo" && (
-                <span className="chip ml-2">synthetic example</span>
-              )}
               <p className="mt-1 text-[13px]">“{e.answer}”</p>
               <p className="mt-1 text-xs text-muted">
                 <b>Why it’s wrong: </b>

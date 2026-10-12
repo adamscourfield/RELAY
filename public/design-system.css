@@ -264,3 +264,16 @@ textarea.field { padding:12px; }
 .review-actions .review-approve,.bh-actions .btn-approve { background:var(--navy); color:white; border:1px solid var(--navy); }
 .review-actions .review-approve:hover,.bh-actions .btn-approve:hover { background:var(--navy-hover,var(--navy)); color:white; }
 .bh-actions .btn-deny { background:transparent; border-color:transparent; color:var(--muted); }
+
+/* Rubric: one quiet accordion, with numbered dimensions. */
+.rubric-list { border:1px solid var(--line); border-radius:18px; background:white; overflow:hidden; }
+.rubric-list .rubric-disclosure { padding:0; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; box-shadow:none; }
+.rubric-list .rubric-disclosure:last-child { border-bottom:0; }
+.rubric-list .rubric-summary { display:flex; flex-direction:row; align-items:center; gap:20px; padding:22px 24px; border-radius:0; }
+.rubric-number { flex-shrink:0; font-family:var(--font-mono); font-size:12px; color:var(--muted); align-self:flex-start; padding-top:3px; }
+.rubric-summary-copy { flex:1; min-width:0; }
+.rubric-list .rubric-summary p { max-width:none; margin-top:5px; }
+.rubric-list .rubric-summary-meta { width:auto; margin-left:auto; }
+.rubric-list .rubric-disclosure[open] > .rubric-summary { border-radius:0; border-bottom:0; background:var(--cream); }
+.rubric-list .rubric-levels { padding:8px 24px 24px 60px; background:var(--cream); }
+@media(max-width:600px) { .rubric-list .rubric-summary { padding:18px 16px; gap:12px; }.rubric-list .rubric-levels { padding:0 16px 18px; } }
