@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
-  Cpu,
   Quote,
   ShieldCheck,
   Sparkles,
@@ -69,25 +68,9 @@ export default async function LessonReport({
             )}
             <div className="mt-3 flex flex-wrap gap-2">
               <span className="chip">{lesson.teacher}</span>
-              {lesson.source === "demo" && (
-                <span className="chip">demo data</span>
-              )}
               {estimatedTiming && (
                 <span className="chip">
                   estimated timing · wait time unknown
-                </span>
-              )}
-              {a && (
-                <span
-                  className="chip"
-                  title={
-                    a.engine === "claude"
-                      ? "Analysed by Claude against the RELAY rubric"
-                      : "Pattern-based analysis (no AI key configured)"
-                  }
-                >
-                  <Cpu size={11} />{" "}
-                  {a.engine === "claude" ? "Claude analysis" : "Pattern engine"}
                 </span>
               )}
             </div>
