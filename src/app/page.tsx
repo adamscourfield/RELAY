@@ -3,7 +3,7 @@ import { ArrowRight, Mic, Upload } from "lucide-react";
 import { listLessons } from "@/lib/store";
 import { RUBRIC } from "@/lib/rubric";
 import { LessonRow } from "@/components/LessonRow";
-import { PageHeader, ScoreRing, Stat, TrendChart, formatDuration } from "@/components/ui";
+import { PageHeader, ScoreRing, Stat, formatDuration } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +11,6 @@ export default async function Dashboard() {
   const lessons = await listLessons();
   const analysed = lessons.filter((l) => l.analysis);
   const recent = analysed.slice(0, 4);
-  const chrono = [...analysed].reverse();
 
   const avg = (xs: number[]) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : 0);
   const last5 = analysed.slice(0, 5);
@@ -67,21 +66,6 @@ export default async function Dashboard() {
           </div>
         </div>
 
-        <div className="glass p-5 min-w-0">
-          <div className="flex items-center justify-between">
-            <div className="eyebrow">Trajectory</div>
-            <span className="chip">{chrono.length} lessons</span>
-          </div>
-          <div className="mt-4">
-            <TrendChart
-              labels={chrono.map(l=>l.title)}
-              series={[
-                { label: "Delivery score", color: "var(--chart-delivery)", values: chrono.map((l) => l.analysis!.overall) },
-                { label: "Student mastery %", color: "var(--chart-mastery)", values: chrono.map((l) => l.assessment?.masteryPct ?? null) },
-              ]}
-            />
-          </div>
-        </div>
       </section>
 
       <section className="overview-stats rise" style={{ animationDelay: "120ms" }}>
