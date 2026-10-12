@@ -352,8 +352,8 @@ export function LiveSession() {
       const bars = 48;
       const bw = w / bars;
       const grad = ctx2d.createLinearGradient(0, 0, w, 0);
-      grad.addColorStop(0, "#6366f1");
-      grad.addColorStop(1, "#7c3aed");
+      grad.addColorStop(0, getComputedStyle(document.documentElement).getPropertyValue("--coral").trim());
+      grad.addColorStop(1, getComputedStyle(document.documentElement).getPropertyValue("--navy").trim());
       ctx2d.fillStyle = grad;
       for (let i = 0; i < bars; i++) {
         const v = data[Math.floor((i / bars) * 40)] / 255;

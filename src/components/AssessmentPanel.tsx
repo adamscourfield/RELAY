@@ -136,7 +136,7 @@ export function AssessmentPanel({
                       className="w-full rounded-t-[3px]"
                       style={{
                         height: Math.max(n ? 4 : 2, (n / maxBin) * 40),
-                        background: i >= 3 ? "var(--coral)" : "#fe9f9f59",
+                        background: i >= 3 ? "var(--coral)" : "color-mix(in srgb, var(--coral) 35%, white)",
                       }}
                       title={`${i * 20}–${i === 4 ? 100 : i * 20 + 19}%: ${n} students`}
                     />

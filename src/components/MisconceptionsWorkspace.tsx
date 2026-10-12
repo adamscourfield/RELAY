@@ -54,7 +54,7 @@ export function MisconceptionsWorkspace({
           label="Reported instances"
           value={groups.reduce((n, g) => n + g.reportedCount, 0)}
           hint="known counts across lessons"
-          accent="var(--coral)"
+          accent="var(--heading-accent)"
         />
         <Stat
           label="Classes"

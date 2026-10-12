@@ -76,8 +76,8 @@ export default async function Dashboard() {
             <TrendChart
               labels={chrono.map(l=>l.title)}
               series={[
-                { label: "Delivery score", color: "var(--cyan)", values: chrono.map((l) => l.analysis!.overall) },
-                { label: "Student mastery %", color: "var(--pink)", values: chrono.map((l) => l.assessment?.masteryPct ?? null) },
+                { label: "Delivery score", color: "var(--chart-delivery)", values: chrono.map((l) => l.analysis!.overall) },
+                { label: "Student mastery %", color: "var(--chart-mastery)", values: chrono.map((l) => l.assessment?.masteryPct ?? null) },
               ]}
             />
           </div>

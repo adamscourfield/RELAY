@@ -14,7 +14,7 @@ export function ScoreRing({
 }) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
-  const color = "var(--indigo)";
+  const color = "var(--coral)";
   const id = useId();
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
@@ -22,7 +22,7 @@ export function ScoreRing({
         <defs>
           <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor={color} />
-            <stop offset="100%" stopColor="var(--violet)" />
+            <stop offset="100%" stopColor="var(--coral)" />
           </linearGradient>
         </defs>
         <circle

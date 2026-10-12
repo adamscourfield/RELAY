@@ -1,0 +1,2421 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Cadence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #ffffff;
+    --well: #f2f4f6;
+    --track: #eceef0;
+    --line: #e4e7eb;
+    --line-strong: #cbd0d6;
+    --text: #191c1e;
+    --muted: #55565c;
+    --dim: #85868c;
+    --ink: #000000;
+    --ink-2: #131b2e;
+    --indigo: #6366f1;
+    --violet: #7c3aed;
+    --coral: #fe9f9f;
+    --amber: #b45309;
+    --green: #059669;
+    --red: #ba1a1a;
+    --font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+    --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  button { font-family: inherit; }
+  a { color: inherit; }
+
+  /* ---------- Shell layout ---------- */
+  .shell { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--line);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
+  .logo-mark {
+    width: 36px; height: 36px; flex-shrink: 0; border-radius: 9px;
+    background: linear-gradient(135deg, var(--ink), var(--ink-2));
+    display: grid; place-items: center;
+  }
+  .logo-name { font-weight: 600; font-size: 16px; letter-spacing: -0.01em; }
+
+  .nav { display: flex; flex-direction: column; gap: 2px; position: relative; }
+  .nav-indicator {
+    position: absolute; left: 0; right: 0; height: 38px; top: 0;
+    background: var(--well); border: 1px solid var(--line); border-radius: 7px;
+    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), height 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+    pointer-events: none; z-index: 0; opacity: 0;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    height: 38px; padding: 0 10px; border-radius: 7px;
+    border: 1px solid transparent; background: none; cursor: pointer;
+    color: var(--muted); font-size: 13.5px; font-weight: 500; text-align: left; width: 100%;
+    position: relative; z-index: 1; transition: color 0.2s ease, transform 0.15s ease;
+  }
+  .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; transition: color 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .nav-item:hover { color: var(--text); }
+  .nav-item:active { transform: scale(0.97); }
+  .nav-item.active { color: var(--text); }
+  .nav-item.active svg { color: var(--indigo); transform: scale(1.08); }
+
+  .sidebar-cta {
+    margin-top: auto;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; border-radius: 8px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, var(--ink), var(--ink-2));
+    color: #fff; font-size: 13.5px; font-weight: 600;
+  }
+
+  .main { flex: 1; min-width: 0; padding: 32px 40px 80px; }
+
+  .bottom-nav { display: none; }
+
+  /* ---------- Page header ---------- */
+  .page-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; margin-bottom: 28px;
+  }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted); font-weight: 500;
+  }
+  .page-head h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-top: 8px; }
+  .accent { color: var(--indigo); }
+  .head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    height: 40px; padding: 0 16px; border-radius: 8px;
+    font-size: 13.5px; font-weight: 600; cursor: pointer; border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .btn svg { width: 15px; height: 15px; }
+  .btn-primary { background: linear-gradient(135deg, var(--ink), var(--ink-2)); color: #fff; }
+  .btn-primary:hover { opacity: 0.92; }
+  .btn-ghost { background: #fff; border-color: var(--line); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--line-strong); background: var(--well); }
+  .btn-sm { height: 32px; padding: 0 12px; font-size: 12.5px; border-radius: 7px; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .field {
+    width: 100%; height: 42px; padding: 0 14px; border-radius: 8px;
+    border: 1px solid var(--line); background: #fff; font-size: 13.5px;
+    font-family: inherit; color: var(--text); outline: none;
+  }
+  .field:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(0,0,0,0.08); }
+  textarea.field { height: auto; padding: 10px 12px; line-height: 1.5; }
+
+  /* ---------- Custom dropdown (replaces native <select> chrome) ---------- */
+  .dropdown { position: relative; }
+  .dropdown-trigger {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    cursor: pointer; text-align: left; color: var(--text);
+  }
+  .dropdown-trigger .placeholder { color: var(--dim); }
+  .dropdown-chevron { width: 16px; height: 16px; color: var(--dim); flex-shrink: 0; transition: transform 0.15s ease; }
+  .dropdown.open .dropdown-chevron { transform: rotate(180deg); }
+  .dropdown.open .dropdown-trigger { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(0,0,0,0.08); }
+  .dropdown-menu {
+    display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 30;
+    background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 4px;
+    box-shadow: 0 10px 28px -10px rgba(15,23,42,0.18);
+    max-height: 240px; overflow-y: auto;
+  }
+  .dropdown.open .dropdown-menu { display: block; }
+  .dropdown-option {
+    display: block; width: 100%; text-align: left; padding: 9px 10px; border-radius: 6px;
+    border: none; background: none; cursor: pointer; font-size: 13.5px; font-family: inherit; color: var(--text);
+  }
+  .dropdown-option:hover { background: var(--well); }
+  .dropdown-option.selected { background: var(--well); font-weight: 600; }
+
+  /* ---------- Cards ---------- */
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; }
+  .grid { display: grid; gap: 14px; }
+  .cols-2 { grid-template-columns: 1.1fr 1fr; }
+  .cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .cols-2b { grid-template-columns: 1fr 1fr; }
+  .setup-grid { grid-template-columns: 1fr 320px; }
+  .loop-grid { grid-template-columns: 1fr 300px; }
+  @media (max-width: 920px) {
+    .cols-2, .cols-2b, .setup-grid, .loop-grid { grid-template-columns: 1fr; }
+    .cols-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .stat { padding: 16px 18px; }
+  .stat-value { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .stat-hint { font-size: 11.5px; color: var(--dim); margin-top: 3px; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px;
+    border-radius: 999px; font-size: 10.5px; font-weight: 600; border: 1px solid var(--line);
+    background: var(--well); color: var(--muted); white-space: nowrap;
+  }
+
+  /* ---------- Views ---------- */
+  .view { display: none; opacity: 0; transform: translateY(10px) scale(0.992); }
+  .view.active { display: block; }
+  .view.active.in { opacity: 1; transform: none; transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1), transform 0.44s cubic-bezier(0.22, 1, 0.36, 1); }
+
+  /* ---------- Chart entry animation primitives ---------- */
+  .bar-fill { transition: width 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+  .anim-pop { opacity: 0; transform: scale(0.5); transform-box: fill-box; transform-origin: center; transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .anim-pop.in { opacity: 1; transform: scale(1); }
+  .anim-fade { opacity: 0; transform: translateY(6px); transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .anim-fade.in { opacity: 1; transform: none; }
+  .anim-grow { transform: scaleX(0); transform-origin: left center; opacity: 0; transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease; }
+  .anim-grow.in { transform: scaleX(1); opacity: 1; }
+  .chart-tooltip {
+    position: absolute; pointer-events: none; z-index: 20; opacity: 0; transition: opacity 0.12s ease, transform 0.08s ease;
+    background: var(--ink); color: #fff; font-size: 11.5px; padding: 8px 10px; border-radius: 8px; white-space: nowrap;
+    box-shadow: 0 10px 24px -8px rgba(0,0,0,0.35); transform: translate(-50%, -100%);
+  }
+  .chart-tooltip.show { opacity: 1; }
+  .chart-tooltip b { font-weight: 600; }
+  .chart-tooltip .tt-row { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+  .chart-tooltip .tt-row:first-child { margin-top: 0; }
+  .chart-tooltip .tt-dot { width: 6px; height: 6px; border-radius: 999px; flex-shrink: 0; }
+
+  /* ---------- Overview ---------- */
+  .score-card { padding: 22px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+  .ring-wrap { position: relative; width: 136px; height: 136px; flex-shrink: 0; }
+  .ring-wrap .num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-wrap .num b { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; }
+  .ring-wrap .num span { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+  .score-detail { flex: 1; min-width: 220px; }
+  .delta { color: var(--green); font-weight: 600; }
+  .dim-rows { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .dim-row { display: grid; grid-template-columns: 88px 1fr 28px; align-items: center; gap: 10px; font-size: 12px; }
+  .dim-row .label { color: var(--muted); }
+  .dim-row .val { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .bar-track { height: 6px; border-radius: 999px; background: var(--track); overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; }
+
+  .trend-card { padding: 20px; }
+  .trend-card .head { display: flex; align-items: center; justify-content: space-between; }
+  .legend { display: flex; gap: 14px; margin-top: 10px; font-size: 11.5px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 999px; }
+
+  .lesson-row {
+    display: flex; align-items: center; gap: 14px; padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .lesson-row:last-child { border-bottom: none; }
+  .score-pill {
+    width: 42px; height: 42px; border-radius: 9px; border: 1.5px solid; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+  .lesson-row .meta { flex: 1; min-width: 0; }
+  .lesson-row .meta .title { font-weight: 600; font-size: 13.5px; }
+  .lesson-row .meta .sub { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+  .loop-panel { padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .loop-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 12px; border-radius: 7px; background: var(--well); border: 1px solid var(--line);
+    font-size: 12.5px;
+  }
+
+  /* ---------- Live view ---------- */
+  .live-wrap { display: grid; grid-template-columns: 1fr 300px; gap: 16px; align-items: start; }
+  @media (max-width: 860px) { .live-wrap { grid-template-columns: 1fr; } .live-aside { display: none; } }
+
+  .live-top { padding: 16px 20px; display: flex; align-items: center; gap: 18px; }
+  .rec-dot-wrap { position: relative; width: 44px; height: 44px; flex-shrink: 0; display: grid; place-items: center; }
+  .rec-dot-bg { position: absolute; inset: 0; border-radius: 999px; background: rgba(178,83,68,0.12); }
+  .rec-dot { width: 11px; height: 11px; border-radius: 999px; background: var(--red); position: relative; }
+  @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.7; } 100% { transform: scale(2.2); opacity: 0; } }
+  .pulse-ring { position: absolute; inset: 0; border-radius: 999px; border: 2px solid var(--red); animation: pulse 1.6s ease-out infinite; }
+  .live-top .timer { font-family: var(--font-mono); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .live-top .label { flex: 1; }
+
+  .dial-screen { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px 16px; }
+  .dial-wrap { position: relative; width: 190px; height: 190px; }
+  .dial-wrap svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .dial-inner {
+    position: absolute; inset: 16px; border-radius: 999px; background: #fff; border: 1px solid var(--line);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer;
+  }
+  .dial-inner .t { font-family: var(--font-mono); font-size: 24px; font-weight: 600; }
+  .dial-inner .l { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+  .dial-inner svg.stop-icon { width: 18px; height: 18px; color: var(--red); }
+  .q-count { text-align: center; }
+  .q-count b { font-size: 32px; font-weight: 700; display: block; }
+
+  .nudge {
+    display: none; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 9px;
+    font-size: 13px; font-weight: 500; border: 1px solid; margin-bottom: 12px;
+  }
+  .nudge.show { display: flex; }
+  .nudge svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  .transcript-box { padding: 16px; max-height: 320px; overflow-y: auto; }
+  .transcript-box .t-head { margin-bottom: 10px; }
+  .t-line { display: grid; grid-template-columns: 40px 1fr; gap: 10px; padding: 6px 0; font-size: 13px; line-height: 1.5; }
+  .t-line .ts { font-family: var(--font-mono); font-size: 10.5px; color: var(--dim); padding-top: 2px; }
+  .t-tag {
+    display: inline-block; margin-left: 7px; font-size: 10px; font-weight: 600; padding: 1px 6px;
+    border-radius: 999px; border: 1px solid currentColor; vertical-align: middle;
+  }
+
+  .gauge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 14px; padding: 16px; }
+  .gauge .g-label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+  .gauge .g-val { font-size: 20px; font-weight: 700; margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .gauge .g-sub { font-size: 10.5px; color: var(--dim); margin-top: 1px; }
+
+  /* ---------- Lesson report ---------- */
+  .report-head { margin-bottom: 24px; }
+  .report-head .back { font-size: 12px; color: var(--muted); display: inline-flex; align-items: center; gap: 5px; margin-bottom: 14px; cursor: pointer; }
+  .report-head h1 { font-size: 28px; margin-top: 8px; }
+  .report-head .objective { font-size: 13.5px; color: var(--muted); margin-top: 8px; max-width: 640px; }
+  .report-head .chips { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+  .summary-card { padding: 20px; display: flex; gap: 22px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(3, auto); gap: 18px 36px; margin-top: 4px; }
+  .metric .m-label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+  .metric .m-val { font-size: 19px; font-weight: 700; margin-top: 3px; }
+  .metric .m-sub { font-size: 10.5px; color: var(--dim); }
+
+  .section-title { font-size: 17px; font-weight: 700; margin: 28px 0 4px; display: flex; align-items: center; gap: 8px; }
+  .section-sub { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+
+  .rubric-card { padding: 16px; }
+  .level-badge { font-size: 11px; font-weight: 700; }
+  .rubric-card .evidence { margin-top: 10px; font-size: 12px; color: var(--muted); font-style: italic; background: var(--well); border-radius: 6px; padding: 8px 10px; border: 1px solid var(--line); }
+
+  .q-row { display: grid; grid-template-columns: 44px 1fr 100px 120px; gap: 12px; align-items: center; padding: 11px 16px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .q-row:last-child { border-bottom: none; }
+  .q-row .ts { font-family: var(--font-mono); font-size: 10.5px; color: var(--dim); }
+  @media (max-width: 760px) { .q-row { grid-template-columns: 40px 1fr; } .q-row > .chip, .q-row > .wait-cell { display: none; } }
+  .q-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+  .q-dot { width: 6px; height: 6px; border-radius: 999px; display: inline-block; margin-right: 1px; }
+  .wait-cell { display: flex; align-items: center; gap: 8px; }
+  .wait-track { flex: 1; height: 4px; border-radius: 999px; background: var(--track); overflow: hidden; }
+  .wait-track span { display: block; height: 100%; border-radius: 999px; }
+  .wait-val { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); width: 32px; text-align: right; }
+
+  /* ---------- Rubric level bar (4 segments) ---------- */
+  .level-bar { display: flex; gap: 4px; }
+  .level-bar span { height: 6px; flex: 1; border-radius: 999px; background: var(--track); }
+
+  /* ---------- Lesson timeline ---------- */
+  .timeline-qrow { position: relative; height: 22px; }
+  .tl-q { position: absolute; top: 0; width: 6px; height: 20px; border-radius: 999px; transform: translateX(-50%); cursor: default; }
+  .timeline-track { position: relative; height: 30px; border-radius: 8px; background: var(--well); border: 1px solid var(--line); overflow: hidden; margin-top: 2px; }
+  .tl-seg { position: absolute; top: 5px; bottom: 5px; border-radius: 3px; }
+  .timeline-ticks { position: relative; height: 16px; margin-top: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--dim); }
+  .timeline-ticks span { position: absolute; transform: translateX(-50%); }
+  .timeline-ticks span:first-child { transform: translateX(0); }
+  .timeline-ticks span:last-child { transform: translateX(-100%); }
+  .timeline-ticks span:nth-child(1) { left: 0%; } .timeline-ticks span:nth-child(2) { left: 25%; }
+  .timeline-ticks span:nth-child(3) { left: 50%; } .timeline-ticks span:nth-child(4) { left: 75%; } .timeline-ticks span:nth-child(5) { left: 100%; }
+  .timeline-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; font-size: 11.5px; color: var(--muted); }
+  .timeline-legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .tl-dot { width: 12px; height: 8px; border-radius: 2px; display: inline-block; }
+
+  /* ---------- Transcript view ---------- */
+  .transcript-toolbar { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px; border-bottom: 1px solid var(--line); align-items: center; }
+  .pill-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--well); border: 1px solid var(--line); }
+  .pill-tab { height: 32px; padding: 0 14px; border-radius: 999px; border: none; background: none; font-size: 12.5px; font-family: inherit; color: var(--muted); cursor: pointer; text-transform: capitalize; }
+  .pill-tab.active { background: #fff; color: var(--text); }
+  .tv-line { display: grid; grid-template-columns: 48px 1fr; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--line); }
+  .tv-line:last-child { border-bottom: none; }
+  .tv-line .tv-ts { font-family: var(--font-mono); font-size: 10.5px; color: var(--dim); padding-top: 1px; }
+  .tv-speaker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 3px; }
+  .tv-speaker.teacher { color: var(--indigo); }
+  .tv-speaker.student { color: var(--coral); }
+  .tv-text { font-size: 13px; line-height: 1.6; }
+  .tv-mark { border-radius: 4px; padding: 0 2px; margin: 0 -2px; }
+
+  .behaviour-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; margin-bottom: 10px; }
+  .b-icon { width: 30px; height: 30px; border-radius: 999px; display: grid; place-items: center; flex-shrink: 0; }
+  .b-icon svg { width: 14px; height: 14px; }
+  .b-body { flex: 1; min-width: 0; }
+  .b-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+  .b-quote { margin-top: 5px; font-size: 12.5px; color: var(--muted); }
+  .b-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .icon-btn {
+    width: 32px; height: 32px; border-radius: 7px; border: 1px solid var(--line); background: #fff;
+    display: grid; place-items: center; cursor: pointer;
+  }
+  .icon-btn svg { width: 14px; height: 14px; }
+  .icon-btn.confirm { color: var(--green); border-color: rgba(79,108,85,0.3); }
+  .icon-btn.dismiss { color: var(--dim); }
+  .behaviour-item.resolved { opacity: 0.6; }
+  .status-note { font-size: 11px; font-weight: 600; margin-top: 4px; }
+
+  .exit-card { padding: 18px; }
+  .exit-stats { display: flex; gap: 26px; margin-top: 10px; }
+  .exit-stats b { font-size: 26px; font-weight: 700; display: block; }
+  .exit-stats span { font-size: 10.5px; color: var(--dim); }
+  .verdict-card { padding: 18px; }
+  .verdict-card h3 { font-size: 17px; margin-top: 8px; }
+  .verdict-card p { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+
+  /* ---------- Behaviour view ---------- */
+  .review-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 11px 14px; border-bottom: 1px solid var(--line); font-size: 13px;
+  }
+  .review-row:last-child { border-bottom: none; }
+  table.tally { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.tally th { text-align: center; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--dim); font-weight: 500; padding: 12px 10px; border-bottom: 1px solid var(--line); }
+  table.tally th:first-child { text-align: left; }
+  table.tally td { text-align: center; padding: 11px 10px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+  table.tally td:first-child { text-align: left; font-weight: 600; }
+  table.tally tr:last-child td { border-bottom: none; }
+
+  .footnote { font-size: 11.5px; color: var(--dim); margin-top: 16px; max-width: 640px; line-height: 1.6; }
+
+  /* ---------- Behaviour page (redesigned: cards + big action buttons) ---------- */
+  .bh-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (max-width: 860px) { .bh-grid { grid-template-columns: 1fr; } }
+  .bh-card { padding: 16px; border-left: 4px solid var(--line); display: flex; flex-direction: column; gap: 10px; transition: box-shadow 0.2s ease, transform 0.2s ease, opacity 0.25s ease, max-height 0.25s ease; }
+  .bh-card:hover { box-shadow: 0 10px 28px -14px rgba(15,23,42,0.22); transform: translateY(-1px); }
+  .bh-card.removing { opacity: 0; transform: scale(0.97); }
+  .bh-card-top { display: flex; align-items: center; gap: 10px; }
+  .bh-avatar { width: 36px; height: 36px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .bh-avatar.sm { width: 26px; height: 26px; font-size: 11px; }
+  .bh-card-name { font-weight: 700; font-size: 14px; }
+  .bh-card-sub { font-size: 10.5px; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 1px; }
+  .bh-quote { font-size: 12.5px; color: var(--text); font-style: italic; line-height: 1.5; margin: 0; }
+  .bh-lesson { font-size: 10.5px; color: var(--dim); }
+  .bh-actions { display: flex; gap: 8px; margin-top: 2px; }
+  .btn-approve, .btn-deny {
+    flex: 1; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease; font-family: inherit;
+  }
+  .btn-approve svg, .btn-deny svg { width: 14px; height: 14px; }
+  .btn-approve { background: rgba(79,108,85,0.08); border-color: rgba(79,108,85,0.3); color: var(--green); }
+  .btn-approve:hover { background: var(--green); color: #fff; }
+  .btn-deny { background: #fff; border-color: var(--line); color: var(--muted); }
+  .btn-deny:hover { border-color: var(--line-strong); background: var(--well); color: var(--text); }
+  .empty-card { padding: 32px; text-align: center; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .empty-card svg { color: var(--green); }
+  .lb-row { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--line); }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-name { font-weight: 600; font-size: 13px; }
+  .lb-badges { display: flex; gap: 6px; margin-left: auto; }
+  .lb-badge { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 9px; border-radius: 999px; font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Misconceptions page (redesigned: stats, filter pills, card grid, badges) ---------- */
+  .mc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (max-width: 860px) { .mc-grid { grid-template-columns: 1fr; } }
+  .mc-badge { width: 46px; height: 46px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+  .mc-badge b { font-size: 17px; font-weight: 700; line-height: 1; }
+  .mc-badge span { font-size: 8px; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+  .mc-details-btn {
+    display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 10px; border-radius: 999px;
+    border: 1px solid var(--line); background: #fff; font-size: 11.5px; font-weight: 600; color: var(--muted);
+    cursor: pointer; font-family: inherit; flex-shrink: 0; align-self: center; transition: all 0.15s ease;
+  }
+  .mc-details-btn:hover { border-color: var(--line-strong); color: var(--text); }
+  .mc-details-btn svg { transition: transform 0.2s ease; }
+  .misc-item-card.expanded .mc-details-btn svg { transform: rotate(90deg); }
+  .misc-item-card.resolved { opacity: 0.55; }
+  .mc-resolved-badge { display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 10px; border-radius: 999px; background: rgba(79,108,85,0.1); color: var(--green); font-size: 11.5px; font-weight: 600; flex-shrink: 0; border: none; cursor: pointer; font-family: inherit; }
+
+  /* ---------- Misconception card: grows to full-screen, shrinks back ---------- */
+  .mc-backdrop { position: fixed; inset: 0; background: rgba(15,17,20,0.55); opacity: 0; transition: opacity 0.4s ease; z-index: 140; }
+  .mc-backdrop.show { opacity: 1; }
+  .mc-fullscreen-card { position: fixed; background: #fff; box-shadow: 0 30px 90px -24px rgba(0,0,0,0.5); overflow-y: auto; z-index: 150; }
+  .mc-fs-header { display: flex; align-items: flex-start; gap: 18px; padding: 28px 36px 22px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: #fff; z-index: 1; }
+  .mc-fs-close { width: 36px; height: 36px; border-radius: 999px; border: 1px solid var(--line); background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; margin-left: auto; transition: all 0.15s ease; }
+  .mc-fs-close:hover { background: var(--well); border-color: var(--line-strong); }
+  .mc-fs-title { font-size: 23px; font-weight: 700; line-height: 1.3; }
+  .mc-fs-body { padding: 28px 36px 48px; max-width: 760px; }
+  .mc-fullscreen-card .mm-list { display: flex; flex-direction: column; gap: 14px; padding: 0; border: none; }
+  .mc-fullscreen-card .mm-fix { padding: 14px 16px; }
+  .mc-fullscreen-card .mm-student { font-size: 13.5px; }
+  .mc-resolve-btn {
+    display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 8px;
+    border: 1px solid rgba(79,108,85,0.3); background: rgba(79,108,85,0.08); color: var(--green); font-size: 12.5px; font-weight: 600;
+    cursor: pointer; font-family: inherit; margin-top: 10px; transition: all 0.15s ease;
+  }
+  .mc-resolve-btn:hover { background: var(--green); color: #fff; }
+  .mc-filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .mc-filter-pill {
+    height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: #fff;
+    font-size: 12.5px; font-weight: 600; color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.15s ease;
+  }
+  .mc-filter-pill:hover { border-color: var(--line-strong); color: var(--text); }
+  .mc-filter-pill.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+  /* ---------- Shared toast ---------- */
+  .toast-wrap { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(16px); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.22,1,0.36,1); }
+  .toast-wrap.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast { display: flex; align-items: center; gap: 9px; background: var(--ink); color: #fff; font-size: 13px; font-weight: 500; padding: 11px 18px; border-radius: 999px; box-shadow: 0 14px 32px -10px rgba(0,0,0,0.4); white-space: nowrap; }
+  .toast svg { color: var(--green); flex-shrink: 0; }
+
+  /* ---------- Misconceptions ---------- */
+  .misc-class-group { margin-bottom: 24px; }
+  .misc-item { display: flex; align-items: flex-start; gap: 12px; flex: 1; min-width: 0; }
+  .misc-item .b-icon svg { color: var(--amber); }
+  .misc-item .misc-text { font-size: 13.5px; font-weight: 500; }
+  .misc-item .misc-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 7px; }
+
+  /* ---------- Misconception detail: expands inline, no overlay ---------- */
+  .misc-item-card { margin-bottom: 8px; overflow: hidden; }
+  .misc-item-header { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; cursor: pointer; }
+  .misc-item-header:hover { background: var(--well); }
+  .misc-chevron { color: var(--dim); flex-shrink: 0; margin-top: 2px; align-self: center; transition: transform 0.15s ease; }
+  .misc-item-card.expanded .misc-chevron { transform: rotate(90deg); }
+  .mm-list { display: none; flex-direction: column; gap: 12px; padding: 4px 16px 16px 58px; border-top: 1px solid var(--line); margin-top: -1px; }
+  .misc-item-card.expanded .mm-list { display: flex; padding-top: 14px; }
+  .mm-student { display: flex; gap: 12px; }
+  .mm-avatar { width: 28px; height: 28px; border-radius: 999px; background: var(--well); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+  .mm-body { flex: 1; min-width: 0; }
+  .mm-name { font-size: 12.5px; font-weight: 600; }
+  .mm-answer { font-size: 12.5px; font-style: italic; color: var(--text); margin-top: 3px; line-height: 1.5; }
+  .mm-why { font-size: 11.5px; color: var(--muted); margin-top: 5px; line-height: 1.5; background: var(--well); border: 1px solid var(--line); border-radius: 7px; padding: 7px 9px; }
+  .mm-why b { color: var(--text); }
+  .mm-fix { display: flex; gap: 9px; padding: 10px 11px; border-radius: 8px; background: rgba(202,113,95,0.06); border: 1px solid rgba(202,113,95,0.25); margin-bottom: 4px; }
+  .mm-fix svg { flex-shrink: 0; margin-top: 2px; }
+  .mm-fix b { font-size: 11.5px; color: var(--indigo); display: block; text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; }
+  .mm-fix p { margin: 3px 0 0; font-size: 12.5px; color: var(--text); line-height: 1.5; }
+  .misc-link { font-size: 11.5px; color: var(--indigo); cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; text-decoration: none; }
+  .misc-link:hover { text-decoration: underline; }
+  .exit-misc { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .exit-misc-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .exit-mi-card { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .exit-mi-header { display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px; padding: 7px 9px; cursor: pointer; }
+  .exit-mi-header:hover { background: var(--well); }
+  .exit-mi-header .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--amber); margin-top: 6px; flex-shrink: 0; }
+  .exit-mi-header .misc-chevron { margin-left: auto; }
+  .exit-mi-card .mm-list { padding-left: 32px; }
+
+  /* ---------- Insights ---------- */
+  .warn-banner { display: flex; gap: 10px; font-size: 13px; border-radius: 14px; padding: 14px; border: 1px solid rgba(152,97,79,0.3); background: rgba(152,97,79,0.05); color: var(--amber); margin-bottom: 14px; line-height: 1.5; }
+  .scatter { position: relative; aspect-ratio: 4/3; width: 100%; border-radius: 10px; border: 1px solid var(--line); background: var(--well); overflow: hidden; margin-top: 10px; }
+  .scatter-line { position: absolute; background: var(--line); }
+  .scatter-line.v { left: 50%; top: 0; bottom: 0; width: 1px; }
+  .scatter-line.h { top: 50%; left: 0; right: 0; height: 1px; }
+  .scatter-label { position: absolute; font-size: 10px; }
+  .scatter-dot { position: absolute; width: 11px; height: 11px; border-radius: 999px; box-shadow: 0 0 0 2px #fff; transform: translate(-50%, 50%); }
+  .driver-rows { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .driver-row { display: grid; grid-template-columns: 1fr 130px 42px; align-items: center; gap: 12px; font-size: 11.5px; }
+  .driver-row span:first-child { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .driver-row b { text-align: right; font-family: var(--font-mono); font-weight: 600; }
+  .driver-track { position: relative; height: 8px; border-radius: 999px; background: var(--track); }
+  .driver-mid { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--line-strong); }
+  .driver-track span { position: absolute; top: 0; bottom: 0; border-radius: 999px; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .phrase-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .phrase-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; }
+  .phrase-list li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .phrase-list li b { font-family: var(--font-mono); font-size: 10.5px; color: var(--dim); font-weight: 500; flex-shrink: 0; }
+  .text-link { font-size: 12px; color: var(--muted); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0 6px; }
+  .text-link:hover { color: var(--text); }
+
+  /* ---------- Rubric page ---------- */
+  .rubric-article { padding: 22px; }
+  .rubric-article .rh { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .rubric-article h2 { font-size: 17px; font-weight: 700; }
+  .rubric-article .revidence { font-size: 12.5px; color: var(--muted); margin-top: 4px; max-width: 560px; }
+  .level-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 18px; }
+  @media (min-width: 700px) { .level-grid { grid-template-columns: repeat(4, 1fr); } }
+  .level-card { border-radius: 10px; padding: 11px; border: 1px solid var(--line); background: var(--well); }
+  .level-card .lc-title { font-size: 11px; font-weight: 600; }
+  .level-card .lc-desc { font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+
+  @media (max-width: 760px) {
+    .sidebar { display: none; }
+    .main { padding: 20px 16px 96px; }
+    .bottom-nav {
+      display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
+      border-top: 1px solid var(--line); padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+    }
+    .bottom-nav button {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none; color: var(--dim); font-size: 10px; font-weight: 500; cursor: pointer;
+    }
+    .bottom-nav button svg { width: 18px; height: 18px; }
+    .bottom-nav button.active { color: var(--indigo); }
+    .page-head { flex-direction: column; align-items: flex-start; }
+    /* On a phone mid-lesson the hero headline just pushes the timer down; the real
+       product drops it once recording starts, so the prototype matches that. */
+    #view-live .page-head { display: none; }
+  }
+</style>
+<link rel="stylesheet" href="/design-system.css">
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="var(--coral)"/><stop offset="100%" stop-color="var(--coral)"/>
+  </linearGradient></defs>
+</svg>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="logo">
+      <span class="logo-mark">
+        <svg width="18" height="18" viewBox="0 0 56 56" fill="none">
+          <path d="M10 40 L28 16 L46 40" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="10" cy="40" r="5.5" fill="white"/>
+          <circle cx="28" cy="16" r="5.5" fill="white"/>
+          <circle cx="46" cy="40" r="5.5" fill="white"/>
+        </svg>
+      </span>
+      <span class="logo-name">Cadence</span>
+    </div>
+    <nav class="nav">
+      <span class="nav-indicator" id="nav-indicator"></span>
+      <button class="nav-item active" data-view="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+        Overview
+      </button>
+      <button class="nav-item" data-view="live">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg>
+        Live
+      </button>
+      <button class="nav-item" data-view="report">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.247 7.761a6 6 0 0 1 0 8.478"/><path d="M19.075 4.933a10 10 0 0 1 0 14.134"/><path d="M4.925 19.067a10 10 0 0 1 0-14.134"/><path d="M7.753 16.239a6 6 0 0 1 0-8.478"/><circle cx="12" cy="12" r="2"/></svg>
+        Lessons
+      </button>
+      <button class="nav-item" data-view="import">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+        Import
+      </button>
+      <button class="nav-item" data-view="behaviour">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
+        Behaviour
+      </button>
+      <button class="nav-item" data-view="misconceptions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+        Misconceptions
+      </button>
+      <button class="nav-item" data-view="insights">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        Insights
+      </button>
+      <button class="nav-item" data-view="rubric">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v16"/><path d="m16 12 2 2 4-4"/><path d="M22 6V5a2 2 0 0 0-2-2l-4-.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4a5 5 0 0 1 4 2 5 5 0 0 1 4-2h4a2 2 0 0 0 2-2v-1.344"/></svg>
+        Rubric
+      </button>
+    </nav>
+    <button class="sidebar-cta" id="sidebar-cta">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg>
+      Start lesson
+    </button>
+  </aside>
+
+  <main class="main">
+
+    <!-- ===================== OVERVIEW ===================== -->
+    <section class="view active" id="view-overview">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Overview</div>
+          <h1>Your teaching, <span class="accent">in rhythm.</span></h1>
+        </div>
+        <div class="head-actions">
+          <button class="btn btn-ghost" onclick="goTo('import')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+            Import transcript
+          </button>
+          <button class="btn btn-primary" onclick="goTo('live')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg>
+            Start live lesson
+          </button>
+        </div>
+      </div>
+
+      <div class="grid cols-2">
+        <div class="card score-card">
+          <div class="ring-wrap">
+            <svg width="136" height="136" viewBox="0 0 136 136" style="transform:rotate(-90deg)">
+              <circle cx="68" cy="68" r="58" fill="none" stroke="var(--track)" stroke-width="10"/>
+              <circle id="overview-ring-arc" cx="68" cy="68" r="58" fill="none" stroke="url(#ringGrad)" stroke-width="10" stroke-linecap="round"
+                stroke-dasharray="364.4" stroke-dashoffset="364.4" data-offset="87.5" style="transition:stroke-dashoffset 1.1s cubic-bezier(0.16,1,0.3,1);"/>
+            </svg>
+            <div class="num"><b id="overview-ring-num" data-count="76">0</b><span>Last 5</span></div>
+          </div>
+          <div class="score-detail">
+            <div class="eyebrow">Delivery score</div>
+            <div style="font-size:13px;margin-top:4px;"><span class="delta">▲ 36 pts</span> vs the previous five lessons</div>
+            <div class="dim-rows">
+              <div class="dim-row"><span class="label">Questioning</span><div class="bar-track"><div class="bar-fill" data-w="80%" style="width:0%;background:var(--indigo)"></div></div><span class="val">3.2</span></div>
+              <div class="dim-row"><span class="label">Checking</span><div class="bar-track"><div class="bar-fill" data-w="95%" style="width:0%;background:var(--green)"></div></div><span class="val">3.8</span></div>
+              <div class="dim-row"><span class="label">Modelling</span><div class="bar-track"><div class="bar-fill" data-w="90%" style="width:0%;background:var(--green)"></div></div><span class="val">3.6</span></div>
+              <div class="dim-row"><span class="label">Retrieval</span><div class="bar-track"><div class="bar-fill" data-w="65%" style="width:0%;background:var(--indigo)"></div></div><span class="val">2.6</span></div>
+              <div class="dim-row"><span class="label">Feedback</span><div class="bar-track"><div class="bar-fill" data-w="80%" style="width:0%;background:var(--indigo)"></div></div><span class="val">3.2</span></div>
+              <div class="dim-row"><span class="label">Wait time</span><div class="bar-track"><div class="bar-fill" data-w="85%" style="width:0%;background:var(--indigo)"></div></div><span class="val">3.4</span></div>
+              <div class="dim-row"><span class="label">Practice</span><div class="bar-track"><div class="bar-fill" data-w="70%" style="width:0%;background:var(--amber)"></div></div><span class="val">2.8</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card trend-card">
+          <div class="head"><div class="eyebrow">Trajectory</div><span class="chip">12 lessons</span></div>
+          <div id="trajectory-chart" style="position:relative;margin-top:10px;"></div>
+          <div class="legend">
+            <span><i class="dot" style="background:var(--indigo)"></i>Delivery score</span>
+            <span><i class="dot" style="background:var(--coral)"></i>Student mastery %</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid cols-4" style="margin-top:14px;">
+        <div class="card stat"><div class="eyebrow">Lessons analysed</div><div class="stat-value" data-count="12">0</div><div class="stat-hint">4h 30m of talk</div></div>
+        <div class="card stat"><div class="eyebrow">Open questions</div><div class="stat-value" style="color:var(--indigo)"><span data-count="40">0</span>%</div><div class="stat-hint">of substantive questions</div></div>
+        <div class="card stat"><div class="eyebrow">Mean wait time</div><div class="stat-value" style="color:var(--violet)">2.3s</div><div class="stat-hint">research target ≥ 3s</div></div>
+        <div class="card stat"><div class="eyebrow">Student mastery</div><div class="stat-value" style="color:var(--heading-accent)"><span data-count="53">0</span>%</div><div class="stat-hint">1 awaiting exit ticket</div></div>
+      </div>
+
+      <div class="grid loop-grid" style="margin-top:14px;">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px;">
+            <div class="eyebrow">Recent lessons</div>
+            <span style="font-size:11.5px;color:var(--muted);">All lessons →</span>
+          </div>
+          <div class="lesson-row">
+            <div class="score-pill" style="border-color:var(--green);color:var(--green);">92</div>
+            <div class="meta"><div class="title">The Industrial Revolution and public health</div><div class="sub">History · Year 10 · 21 Sept · 20 min</div></div>
+            <span class="chip">demo</span><span class="chip">no exit ticket</span>
+          </div>
+          <div class="lesson-row">
+            <div class="score-pill" style="border-color:var(--indigo);color:var(--indigo);">55</div>
+            <div class="meta"><div class="title">Balancing chemical equations</div><div class="sub">Science · Year 9 · 18 Sept · 25 min</div></div>
+            <span class="chip">demo</span><span class="chip" style="color:var(--coral);border-color:var(--coral)">35% mastery</span>
+          </div>
+          <div class="lesson-row">
+            <div class="score-pill" style="border-color:var(--amber);color:var(--amber);">43</div>
+            <div class="meta"><div class="title">Ratio and proportion problems</div><div class="sub">Maths · Year 8 · 14 Sept · 28 min</div></div>
+            <span class="chip">demo</span><span class="chip" style="color:var(--coral);border-color:var(--coral)">42% mastery</span>
+          </div>
+          <div class="lesson-row">
+            <div class="score-pill" style="border-color:var(--green);color:var(--green);">92</div>
+            <div class="meta"><div class="title">Plate boundaries and hazards</div><div class="sub">Geography · Year 7 · 11 Sept · 20 min</div></div>
+            <span class="chip">demo</span><span class="chip" style="color:var(--coral);border-color:var(--coral)">65% mastery</span>
+          </div>
+        </div>
+        <div class="card loop-panel">
+          <div class="eyebrow">Close the loop</div>
+          <p style="font-size:12.5px;color:var(--muted);margin:0;">Upload exit-ticket results to see whether what you said translated into what students can do.</p>
+          <div class="loop-item"><span>The Industrial Revolution and publ…</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LIVE ===================== -->
+    <section class="view" id="view-live">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Live</div>
+          <h1>Teaching, <span class="accent">heard clearly.</span></h1>
+        </div>
+      </div>
+
+      <!-- ---- Setup: state objective, pick class, start ---- -->
+      <div id="live-setup">
+        <div class="grid setup-grid">
+          <div class="card" style="padding:20px;">
+            <div class="eyebrow" style="margin-bottom:14px;">Lesson details</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <input class="field" id="setup-title" placeholder="Lesson title — e.g. Adding fractions">
+              <input class="field" id="setup-objective" placeholder="Lesson objective — e.g. Add fractions with different denominators">
+              <div class="dropdown" id="class-dropdown">
+                <button type="button" class="field dropdown-trigger" id="class-trigger">
+                  <span class="placeholder" id="class-trigger-label">Pick your class…</span>
+                  <svg class="dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="dropdown-menu">
+                  <button type="button" class="dropdown-option" data-value="9A · Maths">9A · Maths</button>
+                  <button type="button" class="dropdown-option" data-value="7B · Science">7B · Science</button>
+                  <button type="button" class="dropdown-option" data-value="10C · English">10C · English</button>
+                  <button type="button" class="dropdown-option" data-value="8C · Geography">8C · Geography</button>
+                  <button type="button" class="dropdown-option" data-value="11A · History">11A · History</button>
+                </div>
+              </div>
+            </div>
+            <label style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:12.5px;color:var(--muted);cursor:pointer;">
+              <input type="checkbox" id="setup-consent" style="margin-top:2px;">
+              I've told the class this lesson is being recorded, in line with my school's recording policy.
+            </label>
+            <button class="btn btn-primary" id="setup-start" style="margin-top:18px;" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg>
+              Start lesson
+            </button>
+          </div>
+          <div class="card" style="padding:20px;">
+            <div class="eyebrow" style="margin-bottom:10px;">How Cadence listens</div>
+            <div style="font-size:12.5px;color:var(--muted);line-height:1.6;">
+              <p style="margin:0 0 12px;"><b style="color:var(--text);">Transcript, not audio.</b><br>Audio is transcribed live and never stored.</p>
+              <p style="margin:0 0 12px;"><b style="color:var(--text);">Live nudges.</b><br>Discreet prompts when patterns drift — long talk without questions, rushing past wait time.</p>
+              <p style="margin:0;"><b style="color:var(--text);">Praise &amp; sanctions.</b><br>Heard automatically from what you say — you confirm them afterwards, nothing is logged without you.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- Active lesson: dial, transcript, gauges ---- -->
+      <div id="live-active" style="display:none;">
+        <div class="live-wrap">
+          <div>
+            <div class="card live-top">
+              <div class="rec-dot-wrap"><span class="rec-dot-bg"></span><span class="pulse-ring"></span><span class="rec-dot"></span></div>
+              <div class="label">
+                <div class="eyebrow" id="live-status-label">Recording</div>
+                <div class="timer" id="live-timer-desktop">0:00</div>
+              </div>
+              <button class="btn btn-ghost" id="live-stop-desktop" style="border-color:rgba(178,83,68,0.3);color:var(--red);">
+                <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+                End &amp; analyse
+              </button>
+            </div>
+
+            <!-- Mobile-first dial (shown on all widths, gauges hide on mobile instead) -->
+            <div class="card dial-screen" style="margin-top:14px;">
+              <div style="text-align:center;">
+                <div class="eyebrow" id="live-class-label">9A · Maths</div>
+                <div style="font-size:14px;font-weight:500;margin-top:5px;" id="live-objective-label">Add fractions with different denominators</div>
+              </div>
+              <div class="dial-wrap">
+                <svg width="190" height="190" viewBox="0 0 190 190">
+                  <circle cx="95" cy="95" r="88" fill="none" stroke="var(--track)" stroke-width="5"/>
+                  <circle id="dial-arc" cx="95" cy="95" r="88" fill="none" stroke="url(#ringGrad)" stroke-width="5" stroke-linecap="round" stroke-dasharray="552.9" stroke-dashoffset="552.9"/>
+                </svg>
+                <div class="dial-inner" id="dial-toggle">
+                  <svg class="stop-icon" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+                  <div class="t" id="live-timer-mobile">0:00</div>
+                  <div class="l" id="dial-caption">Tap to end</div>
+                </div>
+              </div>
+              <div class="q-count"><b id="q-count">0</b><div class="eyebrow">questions asked</div></div>
+            </div>
+
+            <div class="nudge" id="nudge-banner" style="margin-top:14px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z"/></svg>
+              <span id="nudge-text"></span>
+            </div>
+
+            <div class="card transcript-box" style="margin-top:14px;">
+              <div class="eyebrow t-head">Live transcript</div>
+              <div id="transcript-feed">
+                <div style="color:var(--muted);font-size:13px;" id="transcript-empty">Listening… start teaching.</div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="live-aside">
+            <div class="card gauge-grid">
+              <div class="gauge"><div class="g-label">Questions</div><div class="g-val" id="g-questions" style="color:var(--indigo)">0</div><div class="g-sub" id="g-open">0% open</div></div>
+              <div class="gauge"><div class="g-label">Wait time</div><div class="g-val">2.1s</div><div class="g-sub">mean · target 3s</div></div>
+              <div class="gauge"><div class="g-label">Since last Q</div><div class="g-val" id="g-sinceq">0:00</div><div class="g-sub">&nbsp;</div></div>
+              <div class="gauge"><div class="g-label">Since check</div><div class="g-val" id="g-sincecfu">0:00</div><div class="g-sub">&nbsp;</div></div>
+              <div class="gauge"><div class="g-label">Pace</div><div class="g-val">148</div><div class="g-sub">words / min</div></div>
+              <div class="gauge"><div class="g-label">Words</div><div class="g-val" id="g-words">0</div><div class="g-sub">0 think-time cues</div></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LESSON REPORT ===================== -->
+    <section class="view" id="view-report">
+      <div class="report-head">
+        <div class="back"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> Lessons</div>
+        <div class="eyebrow">Science · Year 9 · 18 Sept 2026</div>
+        <h1>Balancing chemical equations</h1>
+        <p class="objective">Balance simple chemical equations by adjusting coefficients, applying conservation of mass.</p>
+        <div class="chips">
+          <span class="chip">L. Chen</span><span class="chip">demo data</span>
+          <span class="chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px;vertical-align:-1px;"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>Claude analysis</span>
+        </div>
+      </div>
+
+      <div class="card summary-card">
+        <div class="ring-wrap" style="width:96px;height:96px;">
+          <svg width="96" height="96" viewBox="0 0 96 96" style="transform:rotate(-90deg)">
+            <circle cx="48" cy="48" r="40" fill="none" stroke="var(--track)" stroke-width="8"/>
+            <circle cx="48" cy="48" r="40" fill="none" stroke="url(#ringGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="113.1"/>
+          </svg>
+          <div class="num"><b style="font-size:24px;">55</b><span>Delivery</span></div>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <p style="margin:0;font-size:13.5px;">Composite 55/100 from 25 minutes of talk. Biggest opportunity is retrieval &amp; review.</p>
+          <div class="metric-grid">
+            <div class="metric"><div class="m-label">Duration</div><div class="m-val">25 min</div></div>
+            <div class="metric"><div class="m-label">Questions</div><div class="m-val">11</div><div class="m-sub">4.4/10 min</div></div>
+            <div class="metric"><div class="m-label">Open / higher-order</div><div class="m-val">29%</div></div>
+            <div class="metric"><div class="m-label">Cold calls</div><div class="m-val">18%</div><div class="m-sub">named a specific student</div></div>
+            <div class="metric"><div class="m-label">Mean wait time</div><div class="m-val">1.8s</div><div class="m-sub">target ≥ 3s</div></div>
+            <div class="metric"><div class="m-label">Speaking pace</div><div class="m-val">155 wpm</div></div>
+            <div class="metric"><div class="m-label">Teacher talk</div><div class="m-val">93%</div><div class="m-sub">of words spoken</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:22px;">Lesson timeline</div>
+      <div class="card" style="padding:16px 18px;">
+        <div class="timeline">
+          <div class="timeline-qrow">
+            <span class="tl-q anim-pop" style="left:3%;background:var(--amber);box-shadow:0 0 8px var(--amber);" title="0:04 · rhetorical"></span>
+            <span class="tl-q anim-pop" style="left:17%;background:var(--green);box-shadow:0 0 8px var(--green);" title="0:42 · higher-order"></span>
+            <span class="tl-q anim-pop" style="left:28%;background:var(--violet);box-shadow:0 0 8px var(--violet);" title="1:27 · closed (cold call)"></span>
+            <span class="tl-q anim-pop" style="left:36%;background:var(--green);box-shadow:0 0 8px var(--green);" title="2:10 · higher-order (hands up)"></span>
+            <span class="tl-q anim-pop" style="left:44%;background:var(--indigo);box-shadow:0 0 8px var(--indigo);" title="2:34 · open"></span>
+            <span class="tl-q anim-pop" style="left:91%;background:var(--dim);box-shadow:0 0 8px var(--dim);" title="24:48 · procedural (hands up)"></span>
+            <span class="tl-q anim-pop" style="left:97%;background:var(--dim);box-shadow:0 0 8px var(--dim);" title="24:54 · procedural"></span>
+          </div>
+          <div class="timeline-track">
+            <span class="tl-seg anim-grow" style="left:0%;width:11%;background:linear-gradient(180deg,var(--indigo),var(--violet));opacity:.78;"></span>
+            <span class="tl-seg anim-grow" style="left:12%;width:4%;background:var(--coral);"></span>
+            <span class="tl-seg anim-grow" style="left:17%;width:9%;background:linear-gradient(180deg,var(--indigo),var(--violet));opacity:.78;"></span>
+            <span class="tl-seg anim-grow" style="left:27%;width:3%;background:var(--coral);"></span>
+            <span class="tl-seg anim-grow" style="left:31%;width:14%;background:linear-gradient(180deg,var(--indigo),var(--violet));opacity:.78;"></span>
+            <span class="tl-seg anim-grow" style="left:46%;width:4%;background:var(--coral);"></span>
+            <span class="tl-seg anim-grow" style="left:51%;width:38%;background:linear-gradient(180deg,var(--indigo),var(--violet));opacity:.6;"></span>
+            <span class="tl-seg anim-grow" style="left:90%;width:2%;background:var(--coral);"></span>
+            <span class="tl-seg anim-grow" style="left:93%;width:7%;background:linear-gradient(180deg,var(--indigo),var(--violet));opacity:.78;"></span>
+          </div>
+          <div class="timeline-ticks"><span>0:00</span><span>6:15</span><span>12:30</span><span>18:45</span><span>25:00</span></div>
+        </div>
+        <div class="timeline-legend">
+          <span><i class="tl-dot" style="background:linear-gradient(180deg,var(--indigo),var(--violet));"></i>Teacher talk</span>
+          <span><i class="tl-dot" style="background:var(--coral);"></i>Student talk</span>
+          <span><i class="tl-dot" style="width:4px;height:12px;border-radius:999px;background:var(--green);"></i>Question (colour = type)</span>
+          <span style="color:var(--dim);">Gaps = silence / independent work</span>
+        </div>
+      </div>
+
+      <div class="section-title">Rubric breakdown</div>
+      <div class="grid cols-2b">
+        <div class="card rubric-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <b>Questioning depth</b><span class="level-badge" style="color:var(--amber)">Developing · 2/4</span>
+          </div>
+          <div class="level-bar" style="margin-top:9px;"><span class="anim-pop" style="background:var(--amber)"></span><span class="anim-pop" style="background:var(--amber)"></span><span class="anim-pop"></span><span class="anim-pop"></span></div>
+          <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0;">11 questions asked; 29% were open or higher-order rather than recall.</p>
+          <div class="evidence">“Why would it be wrong to just add the tops and the bottoms?”</div>
+        </div>
+        <div class="card rubric-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <b>Checking for understanding</b><span class="level-badge" style="color:var(--green)">Exemplary · 4/4</span>
+          </div>
+          <div class="level-bar" style="margin-top:9px;"><span class="anim-pop" style="background:var(--green)"></span><span class="anim-pop" style="background:var(--green)"></span><span class="anim-pop" style="background:var(--green)"></span><span class="anim-pop" style="background:var(--green)"></span></div>
+          <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0;">5 whole-class checks and 2 cold calls detected (2.8/10 min) — naming specific students samples beyond the confident volunteers.</p>
+          <div class="evidence">“Turn and talk to your partner — thirty seconds.”</div>
+        </div>
+        <div class="card rubric-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <b>Explanation &amp; modelling</b><span class="level-badge" style="color:var(--indigo)">Secure · 3/4</span>
+          </div>
+          <div class="level-bar" style="margin-top:9px;"><span class="anim-pop" style="background:var(--indigo)"></span><span class="anim-pop" style="background:var(--indigo)"></span><span class="anim-pop" style="background:var(--indigo)"></span><span class="anim-pop"></span></div>
+          <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0;">Clear objective and sequenced steps, with one narrated worked example.</p>
+          <div class="evidence">“Watch me first. I'm thinking: two thirds plus one quarter.”</div>
+        </div>
+        <div class="card rubric-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <b>Retrieval &amp; review</b><span class="level-badge" style="color:var(--red)">Emerging · 1/4</span>
+          </div>
+          <div class="level-bar" style="margin-top:9px;"><span class="anim-pop" style="background:var(--red)"></span><span class="anim-pop"></span><span class="anim-pop"></span><span class="anim-pop"></span></div>
+          <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0;">No references to prior learning or retrieval activities detected.</p>
+        </div>
+        <div class="card rubric-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <b>Feedback quality</b><span class="level-badge" style="color:var(--amber)">Developing · 2/4</span><span class="chip" title="Audio captures only part of this dimension">audio: medium</span>
+          </div>
+          <div class="level-bar" style="margin-top:9px;"><span class="anim-pop" style="background:var(--amber)"></span><span class="anim-pop" style="background:var(--amber)"></span><span class="anim-pop"></span><span class="anim-pop"></span></div>
+          <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0;">Mostly generic praise (“good”, “well done”) rather than task-specific feedback.</p>
+        </div>
+        <div class="card rubric-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <b>Wait time</b><span class="level-badge" style="color:var(--indigo)">Secure · 3/4</span><span class="chip" title="Audio captures only part of this dimension">audio: medium</span>
+          </div>
+          <div class="level-bar" style="margin-top:9px;"><span class="anim-pop" style="background:var(--indigo)"></span><span class="anim-pop" style="background:var(--indigo)"></span><span class="anim-pop" style="background:var(--indigo)"></span><span class="anim-pop"></span></div>
+          <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0;">Mean pause after questions: 1.8s, with explicit thinking-time signalled.</p>
+          <div class="evidence">“Thinking time, no hands yet.”</div>
+        </div>
+        <div class="card rubric-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <b>Guided → independent practice</b><span class="level-badge" style="color:var(--amber)">Developing · 2/4</span><span class="chip" title="Audio captures only part of this dimension">audio: medium</span>
+          </div>
+          <div class="level-bar" style="margin-top:9px;"><span class="anim-pop" style="background:var(--amber)"></span><span class="anim-pop" style="background:var(--amber)"></span><span class="anim-pop"></span><span class="anim-pop"></span></div>
+          <p style="font-size:12.5px;color:var(--muted);margin:8px 0 0;">Some guided practice, but little scaffolding before independent work.</p>
+          <div class="evidence">“Now your turn. Complete questions one to six on your own.”</div>
+        </div>
+      </div>
+
+      <div class="grid cols-2b" style="margin-top:14px;">
+        <div class="card" style="padding:18px;">
+          <div class="eyebrow" style="display:flex;align-items:center;gap:7px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>
+            What worked
+          </div>
+          <ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;font-size:13px;line-height:1.5;">
+            <li>Checking for understanding was exemplary — mini-whiteboards plus two cold calls sampled well beyond the confident volunteers.</li>
+            <li>Explanation was clearly modelled, with thinking made visible step by step.</li>
+            <li>Specific, reasoning-based praise (“I like how you used an estimate to check”) reinforced the right moves.</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:18px;position:relative;overflow:hidden;">
+          <div class="eyebrow" style="display:flex;align-items:center;gap:7px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--chart-delivery)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            Try next lesson
+          </div>
+          <ol style="margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:9px;font-size:13px;line-height:1.5;">
+            <li>Open with a 3-minute retrieval quiz on last lesson's content before moving to new material.</li>
+            <li>Swap generic praise for specific feedback naming exactly what the student did well.</li>
+            <li>Keep cold-calling after hands-up questions, not just for check-ins — spread it through the explanation too.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;margin-top:28px;">
+        <span>Questions asked</span>
+      </div>
+      <div class="q-legend">
+        <span class="chip"><i class="q-dot" style="background:var(--green)"></i>higher-order · 2</span>
+        <span class="chip"><i class="q-dot" style="background:var(--indigo)"></i>open · 1</span>
+        <span class="chip"><i class="q-dot" style="background:var(--violet)"></i>closed · 1</span>
+        <span class="chip"><i class="q-dot" style="background:var(--dim)"></i>procedural · 2</span>
+        <span class="chip"><i class="q-dot" style="background:var(--amber)"></i>rhetorical · 1</span>
+      </div>
+      <p class="section-sub">Type (cognitive demand) and target (who it went to) are separate signals — a sharp question that only ever reaches volunteers still isn't checking the whole class.</p>
+      <div class="card" style="padding:0;">
+        <div class="q-row">
+          <span class="ts">0:04</span>
+          <span>So fractions, you've all done fractions before, right?</span>
+          <span class="chip" style="color:var(--amber);border-color:currentColor">rhetorical</span>
+          <span class="wait-cell"><span class="wait-track"><span style="width:14%;background:var(--red);"></span></span><span class="wait-val">0.7s</span></span>
+        </div>
+        <div class="q-row">
+          <span class="ts">0:42</span>
+          <span>Why would it be wrong to just add the tops and the bottoms?</span>
+          <span class="chip" style="color:var(--green);border-color:currentColor">higher-order</span>
+          <span class="wait-cell"><span class="wait-track"><span style="width:76%;background:var(--green);"></span></span><span class="wait-val">3.8s</span></span>
+        </div>
+        <div class="q-row">
+          <span class="ts">1:27</span>
+          <span>Jamal, what did your partner say? <span class="chip" style="color:var(--indigo);border-color:currentColor">cold call</span></span>
+          <span class="chip" style="color:var(--violet);border-color:currentColor">closed</span>
+          <span class="wait-cell"><span class="wait-track"><span style="width:56%;background:var(--amber);"></span></span><span class="wait-val">2.8s</span></span>
+        </div>
+        <div class="q-row">
+          <span class="ts">2:10</span>
+          <span>Does anyone know what would happen if we used twelve instead of six? <span class="chip" style="color:var(--amber);border-color:currentColor">hands up</span></span>
+          <span class="chip" style="color:var(--green);border-color:currentColor">higher-order</span>
+          <span class="wait-cell"><span class="wait-track"><span style="width:72%;background:var(--green);"></span></span><span class="wait-val">3.6s</span></span>
+        </div>
+        <div class="q-row">
+          <span class="ts">2:34</span>
+          <span>What would happen to the answer?</span>
+          <span class="chip" style="color:var(--indigo);border-color:currentColor">open</span>
+          <span class="wait-cell"><span class="wait-track"><span style="width:62%;background:var(--amber);"></span></span><span class="wait-val">3.1s</span></span>
+        </div>
+        <div class="q-row">
+          <span class="ts">24:48</span>
+          <span>Anyone? <span class="chip" style="color:var(--amber);border-color:currentColor">hands up</span></span>
+          <span class="chip" style="color:var(--dim);border-color:currentColor">procedural</span>
+          <span class="wait-cell"><span class="wait-track"><span style="width:10%;background:var(--red);"></span></span><span class="wait-val">0.5s</span></span>
+        </div>
+        <div class="q-row">
+          <span class="ts">24:54</span>
+          <span>Does that make sense?</span>
+          <span class="chip" style="color:var(--dim);border-color:currentColor">procedural</span>
+          <span class="wait-cell"><span class="wait-track"><span style="width:6%;background:var(--red);"></span></span><span class="wait-val">0.3s</span></span>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+        Behaviour
+      </div>
+      <p class="section-sub">Merits and sanctions Cadence heard in the transcript, awaiting your confirmation.</p>
+
+      <div id="behaviour-list">
+        <div class="card behaviour-item" data-item>
+          <span class="b-icon" style="background:rgba(79,108,85,0.1);color:var(--green);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="5"/><path d="M8.5 13 7 22l5-3 5 3-1.5-9"/></svg>
+          </span>
+          <div class="b-body">
+            <div class="b-top"><b style="color:var(--green);">Merit</b><span class="chip" style="font-family:var(--font-mono)">1:46</span><span class="chip">Jamal</span></div>
+            <div class="b-quote">“That's a merit for you, Jamal — excellent reasoning.”</div>
+            <div class="status-note" data-status></div>
+          </div>
+          <div class="b-actions" data-actions>
+            <button class="icon-btn confirm" onclick="resolveBehaviour(this, 'confirmed')" title="Confirm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
+            </button>
+            <button class="icon-btn dismiss" onclick="resolveBehaviour(this, 'dismissed')" title="Dismiss">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="card behaviour-item" data-item>
+          <span class="b-icon" style="background:rgba(152,97,79,0.1);color:var(--amber);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 18a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+          </span>
+          <div class="b-body">
+            <div class="b-top"><b style="color:var(--amber);">Demerit</b><span class="chip" style="font-family:var(--font-mono)">17:44</span><span class="chip">Ben</span></div>
+            <div class="b-quote">“Ben, that's a demerit for talking over me again.”</div>
+            <div class="status-note" data-status></div>
+          </div>
+          <div class="b-actions" data-actions>
+            <button class="icon-btn confirm" onclick="resolveBehaviour(this, 'confirmed')" title="Confirm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
+            </button>
+            <button class="icon-btn dismiss" onclick="resolveBehaviour(this, 'dismissed')" title="Dismiss">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title" id="outcomes" style="scroll-margin-top:24px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/></svg>
+        Triangulate with outcomes
+      </div>
+      <p class="section-sub" style="margin-top:-10px;">What was said, checked against what students could do.</p>
+      <div class="grid cols-2">
+        <div class="card exit-card" id="exit-card">
+          <div id="exit-upload">
+            <div class="eyebrow">Import exit ticket</div>
+            <p style="font-size:12px;color:var(--muted);margin:6px 0 10px;">Paste results as CSV — student, score, max — or choose a file from your gradebook export.</p>
+            <textarea class="field" id="exit-csv" style="height:84px;font-family:var(--font-mono);font-size:11.5px;resize:vertical;" placeholder="student,score,max&#10;Amara,8,10&#10;Jamal,9,10"></textarea>
+            <input type="file" id="exit-file" accept=".csv,.txt" style="display:none;">
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;">
+              <button class="btn btn-ghost btn-sm" id="exit-choose">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+                Choose file
+              </button>
+              <button class="btn btn-ghost btn-sm" id="exit-sample">Use sample</button>
+              <button class="btn btn-primary btn-sm" id="exit-upload-btn" style="margin-left:auto;" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>
+                Upload &amp; analyse
+              </button>
+            </div>
+            <label style="display:block;margin-top:14px;font-size:12px;color:var(--muted);">
+              Misconceptions seen (optional, one per line)
+              <textarea class="field" id="exit-misc-input" style="height:auto;margin-top:6px;font-family:var(--font-mono);font-size:11.5px;resize:vertical;" rows="3" placeholder="Changed a subscript instead of adding a coefficient x6&#10;Confuses mass and weight"></textarea>
+            </label>
+          </div>
+          <div id="exit-busy" style="display:none;text-align:center;padding:22px 0;color:var(--muted);font-size:13px;">Analysing results…</div>
+          <div id="exit-results" style="display:none;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div class="eyebrow" id="exit-results-label">Exit ticket</div>
+              <button class="icon-btn dismiss" id="exit-reset" title="Remove and re-upload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div class="exit-stats">
+              <div><b id="exit-mastery" style="color:var(--coral)">0%</b><span>reached mastery (≥70%)</span></div>
+              <div><b id="exit-mean">0%</b><span>mean score</span></div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:18px;" id="exit-bars"></div>
+            <div class="exit-misc">
+              <div class="exit-misc-head">
+                <span class="eyebrow" style="display:flex;align-items:center;gap:6px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2Z"/></svg>
+                  Misconceptions
+                </span>
+                <button class="misc-link" id="exit-misc-see-all">See all for Year 9 →</button>
+              </div>
+              <div id="exit-misc-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+              <p id="exit-misc-empty" style="font-size:12.5px;color:var(--muted);margin:8px 0 0;display:none;">None noted for this exit ticket yet.</p>
+            </div>
+          </div>
+        </div>
+        <div class="card verdict-card">
+          <div class="eyebrow">Triangulation</div>
+          <h3 id="verdict-h">Upload an exit ticket to see this</h3>
+          <p id="verdict-d">Once results come in, Cadence checks whether what the delivery score found is actually showing up in what students can do.</p>
+          <button class="misc-link" style="margin-top:10px;" onclick="goToMisconceptions('Year 9')">See misconceptions for Year 9 →</button>
+        </div>
+      </div>
+
+      <div class="section-title">Transcript</div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="transcript-toolbar">
+          <div class="pill-tabs" id="tv-tabs">
+            <button class="pill-tab active" data-filter="all">All</button>
+            <button class="pill-tab" data-filter="questions">Questions</button>
+            <button class="pill-tab" data-filter="students">Students</button>
+          </div>
+          <input class="field" id="tv-search" style="height:40px;max-width:260px;margin-left:auto;" placeholder="Search transcript…">
+        </div>
+        <div id="tv-lines" style="max-height:560px;overflow-y:auto;"></div>
+      </div>
+    </section>
+
+    <!-- ===================== BEHAVIOUR ===================== -->
+    <section class="view" id="view-behaviour">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Behaviour</div>
+          <h1>Praise and Sanctions</h1>
+        </div>
+      </div>
+
+      <div class="grid cols-4" id="behaviour-stats"></div>
+
+      <div class="section-title" style="margin-top:22px;">Needs review</div>
+      <div class="bh-grid" id="pending-list" style="margin-bottom:20px;"></div>
+      <div class="card empty-card" id="pending-empty" style="display:none;margin-bottom:20px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        <div style="font-weight:600;color:var(--text);">All caught up</div>
+        <p style="margin:0;font-size:12.5px;">Nothing waiting on you — every detection has been reviewed.</p>
+      </div>
+
+      <div class="section-title">Today's leaderboard</div>
+      <div class="card" id="leaderboard" style="padding:4px 0;"></div>
+    </section>
+
+    <!-- ===================== MISCONCEPTIONS ===================== -->
+    <section class="view" id="view-misconceptions">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Misconceptions</div>
+          <h1>What your classes keep <span class="accent">getting wrong.</span></h1>
+        </div>
+      </div>
+
+      <div class="grid cols-4" id="misc-stats"></div>
+
+      <div class="mc-filter-row" id="mc-filters" style="margin-top:22px;"></div>
+      <div id="misc-groups"></div>
+    </section>
+
+    <!-- ===================== INSIGHTS ===================== -->
+    <section class="view" id="view-insights">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Insights</div>
+          <h1>What <span class="accent">actually moves</span> learning.</h1>
+        </div>
+      </div>
+
+      <div class="grid cols-4">
+        <div class="card stat"><div class="eyebrow">Paired lessons</div><div class="stat-value">11</div><div class="stat-hint">transcript + outcomes</div></div>
+        <div class="card stat"><div class="eyebrow">Delivery ↔ mastery</div><div class="stat-value" style="color:var(--indigo)">r = 0.42</div><div class="stat-hint">moderate relationship</div></div>
+        <div class="card stat"><div class="eyebrow">Avg mastery</div><div class="stat-value" style="color:var(--heading-accent)">53%</div></div>
+        <div class="card stat"><div class="eyebrow">Teachers</div><div class="stat-value">4</div></div>
+      </div>
+
+      <div class="grid insights-detail-grid" style="margin-top:24px;">
+        <div class="card" style="padding:20px;">
+          <div class="eyebrow">Delivery vs mastery</div>
+          <div class="scatter">
+            <span class="scatter-line v"></span><span class="scatter-line h"></span>
+            <span class="scatter-label" style="left:6px;top:6px;color:var(--dim);">outcomes beat delivery</span>
+            <span class="scatter-label" style="right:6px;top:6px;color:var(--green);">aligned · strong</span>
+            <span class="scatter-label" style="left:6px;bottom:6px;color:var(--dim);">aligned · weak</span>
+            <span class="scatter-label" style="right:6px;bottom:6px;color:var(--amber);">didn't land</span>
+            <span class="scatter-dot anim-pop" style="left:18%;bottom:30%;background:var(--amber);" title="Ratio and proportion problems"></span>
+            <span class="scatter-dot anim-pop" style="left:38%;bottom:52%;background:var(--indigo);" title="Balancing chemical equations"></span>
+            <span class="scatter-dot anim-pop" style="left:55%;bottom:45%;background:var(--indigo);" title="Area of compound shapes"></span>
+            <span class="scatter-dot anim-pop" style="left:62%;bottom:70%;background:var(--green);" title="Photosynthesis and limiting factors"></span>
+            <span class="scatter-dot anim-pop" style="left:74%;bottom:82%;background:var(--green);" title="Plate boundaries and hazards"></span>
+            <span class="scatter-dot anim-pop" style="left:81%;bottom:88%;background:var(--green);" title="The Industrial Revolution and public health"></span>
+            <span class="scatter-dot anim-pop" style="left:46%;bottom:22%;background:var(--amber);" title="Causes of the First World War"></span>
+            <span class="scatter-dot anim-pop" style="left:28%;bottom:60%;background:var(--indigo);" title="Crafting persuasive openings"></span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--dim);margin-top:8px;">
+            <span>delivery 0</span><span>→ 100</span>
+          </div>
+        </div>
+        <div class="card" style="padding:20px;">
+          <div class="eyebrow">Behaviours linked to mastery</div>
+          <p style="font-size:11px;color:var(--dim);margin:4px 0 0;">Pearson r across paired lessons. Right = moves with higher mastery.</p>
+          <div class="driver-rows">
+            <div class="driver-row"><span>Checking for understanding</span><div class="driver-track"><i class="driver-mid"></i><span style="left:50%;width:0%;background:var(--green);" data-w="27%"></span></div><b>0.54</b></div>
+            <div class="driver-row"><span>Questioning depth</span><div class="driver-track"><i class="driver-mid"></i><span style="left:50%;width:0%;background:var(--green);" data-w="19%"></span></div><b>0.38</b></div>
+            <div class="driver-row"><span>% open questions</span><div class="driver-track"><i class="driver-mid"></i><span style="left:50%;width:0%;background:var(--green);" data-w="15%"></span></div><b>0.30</b></div>
+            <div class="driver-row"><span>Mean wait time</span><div class="driver-track"><i class="driver-mid"></i><span style="left:50%;width:0%;background:var(--green);" data-w="11%"></span></div><b>0.22</b></div>
+            <div class="driver-row"><span>Teacher talk %</span><div class="driver-track"><i class="driver-mid"></i><span style="left:36%;width:0%;background:var(--red);" data-w="14%"></span></div><b>-0.28</b></div>
+            <div class="driver-row"><span>Retrieval &amp; review</span><div class="driver-track"><i class="driver-mid"></i><span style="left:50%;width:0%;background:var(--green);" data-w="9%"></span></div><b>0.18</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">What high-outcome lessons say</div>
+      <p class="section-sub">Teacher phrases that appear disproportionately in the top 5 vs bottom 5 lessons by mastery. Only phrases used across two or more subjects are shown, to filter out topic vocabulary.</p>
+      <div class="grid cols-2b">
+        <div class="card" style="padding:18px;">
+          <div class="eyebrow" style="color:var(--green);">More common in high-mastery lessons</div>
+          <ul class="phrase-list">
+            <li><span>"Why would it be wrong to…"</span><b>5 vs 1</b></li>
+            <li><span>"Turn and talk to your partner"</span><b>4 vs 0</b></li>
+            <li><span>"How do you know?"</span><b>6 vs 2</b></li>
+            <li><span>"Thinking time, no hands yet"</span><b>4 vs 1</b></li>
+          </ul>
+        </div>
+        <div class="card" style="padding:18px;">
+          <div class="eyebrow" style="color:var(--red);">More common in low-mastery lessons</div>
+          <ul class="phrase-list">
+            <li><span>"Does that make sense?"</span><b>1 vs 7</b></li>
+            <li><span>"Okay? Good."</span><b>0 vs 5</b></li>
+            <li><span>"Any questions? No? Great."</span><b>0 vs 4</b></li>
+            <li><span>"It's quite easy really"</span><b>1 vs 4</b></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RUBRIC ===================== -->
+    <section class="view" id="view-rubric">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Transparency</div>
+          <h1>The rubric behind every score</h1>
+        </div>
+      </div>
+      <p style="font-size:13.5px;color:var(--muted);max-width:640px;margin:-18px 0 22px;">
+        Cadence scores seven dimensions drawn from well-replicated research on effective instruction. Each is scored 1–4 with quoted evidence from the transcript. Weights reflect how reliably each can be judged from audio, not how much it matters.
+      </p>
+      <div id="rubric-list" style="display:flex;flex-direction:column;gap:14px;"></div>
+    </section>
+
+    <!-- ===================== IMPORT ===================== -->
+    <section class="view" id="view-import">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Import</div>
+          <h1>Bring in a recording</h1>
+        </div>
+      </div>
+      <div class="grid import-grid">
+        <div class="card" style="padding:22px;">
+          <div class="grid cols-2b">
+            <input class="field" style="grid-column:1/-1;" placeholder="Lesson title">
+            <input class="field" placeholder="Subject">
+            <input class="field" placeholder="Year group / class">
+            <input class="field" style="grid-column:1/-1;" placeholder="Teacher">
+          </div>
+          <div class="pill-tabs" style="margin-top:18px;width:fit-content;">
+            <button class="pill-tab active">Transcript</button>
+            <button class="pill-tab">Audio recording</button>
+          </div>
+          <textarea class="field" style="margin-top:12px;font-family:var(--font-mono);font-size:11.5px;" rows="10" placeholder="Paste a transcript, or choose a .vtt / .srt / .txt file from your recording device…"></textarea>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px;">
+            <button class="btn btn-ghost btn-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              Choose file
+            </button>
+            <button class="text-link">Paste example</button>
+            <button class="btn btn-primary" style="margin-left:auto;" onclick="goTo('report')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/></svg>
+              Analyse lesson
+            </button>
+          </div>
+        </div>
+        <div class="card" style="padding:22px;font-size:13px;display:flex;flex-direction:column;gap:14px;">
+          <div class="eyebrow">Supported formats</div>
+          <div><div style="font-weight:600;">Audio recording</div><div style="color:var(--muted);margin-top:2px;">From an external recorder or lapel mic. Transcribed with speaker diarization — teacher and student talk are separated automatically.</div></div>
+          <div><div style="font-weight:600;">WebVTT / SRT</div><div style="color:var(--muted);margin-top:2px;">Exported by most recorders and transcription services. Timings are used for wait-time analysis.</div></div>
+          <div><div style="font-weight:600;">Timestamped lines</div><div style="color:var(--muted);margin-top:2px;font-family:var(--font-mono);font-size:11.5px;">[00:03:20] T: text</div></div>
+          <div><div style="font-weight:600;">Plain text</div><div style="color:var(--muted);margin-top:2px;">Works, but timings are estimated so wait time can't be measured.</div></div>
+          <div style="color:var(--muted);border-top:1px solid var(--line);padding-top:14px;">Prefix lines with <span style="font-family:var(--font-mono);color:var(--text);">T:</span> / <span style="font-family:var(--font-mono);color:var(--text);">S:</span> (or Teacher/Student) to unlock teacher-talk ratio in a text transcript.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="active" data-view="overview">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+      Overview
+    </button>
+    <button data-view="live">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg>
+      Live
+    </button>
+    <button data-view="report">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.247 7.761a6 6 0 0 1 0 8.478"/><path d="M19.075 4.933a10 10 0 0 1 0 14.134"/><path d="M4.925 19.067a10 10 0 0 1 0-14.134"/><path d="M7.753 16.239a6 6 0 0 1 0-8.478"/><circle cx="12" cy="12" r="2"/></svg>
+      Lessons
+    </button>
+    <button data-view="insights">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+      Insights
+    </button>
+    <button data-view="rubric">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v16"/><path d="m16 12 2 2 4-4"/><path d="M22 6V5a2 2 0 0 0-2-2l-4-.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4a5 5 0 0 1 4 2 5 5 0 0 1 4-2h4a2 2 0 0 0 2-2v-1.344"/></svg>
+      Rubric
+    </button>
+  </nav>
+</div>
+
+<div class="toast-wrap" id="toast-wrap">
+  <div class="toast">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    <span class="toast-text"></span>
+  </div>
+</div>
+
+<script>
+  // ---------- Nav / view switching ----------
+  function moveNavIndicator(view) {
+    var indicator = document.getElementById('nav-indicator');
+    var active = document.querySelector('.nav-item[data-view="' + view + '"]');
+    if (!indicator || !active) { if (indicator) indicator.style.opacity = '0'; return; }
+    indicator.style.opacity = '1';
+    indicator.style.transform = 'translateY(' + active.offsetTop + 'px)';
+    indicator.style.height = active.offsetHeight + 'px';
+  }
+  function goTo(view) {
+    var target = document.getElementById('view-' + view);
+    document.querySelectorAll('.view').forEach(function (el) {
+      el.classList.remove('in');
+      el.classList.toggle('active', el === target);
+    });
+    document.querySelectorAll('.nav-item, .bottom-nav button').forEach(function (el) {
+      el.classList.toggle('active', el.getAttribute('data-view') === view);
+    });
+    moveNavIndicator(view);
+    if (view === 'live') resetLiveToSetup(); else stopLiveDemo();
+    if (target) {
+      void target.offsetWidth; // force reflow so the transition replays every time
+      requestAnimationFrame(function () {
+        target.classList.add('in');
+        animateViewEntrance(view);
+      });
+    }
+  }
+  document.querySelectorAll('[data-view]').forEach(function (el) {
+    el.addEventListener('click', function () { goTo(el.getAttribute('data-view')); });
+  });
+  document.getElementById('sidebar-cta').addEventListener('click', function () { goTo('live'); });
+  window.addEventListener('resize', function () {
+    var active = document.querySelector('.nav-item.active');
+    if (active) moveNavIndicator(active.getAttribute('data-view'));
+  });
+
+  // ---------- Shared toast confirmation ----------
+  var toastTimer = null;
+  function showToast(message) {
+    var wrap = document.getElementById('toast-wrap');
+    if (!wrap) return;
+    wrap.querySelector('.toast-text').textContent = message;
+    wrap.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { wrap.classList.remove('show'); }, 4200);
+  }
+
+  // ---------- Shared entrance animations: counts, bars, pops, run each time a view opens ----------
+  function animateCounts(scope) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { scope.querySelectorAll("[data-count]").forEach(function(el) { el.textContent = el.getAttribute("data-count"); }); return; }
+    scope.querySelectorAll('[data-count]').forEach(function (el) {
+      var target = parseFloat(el.getAttribute('data-count'));
+      if (!isFinite(target)) return;
+      var start = performance.now();
+      var dur = 900;
+      function tick(now) {
+        var p = Math.min(1, (now - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased);
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) el.textContent = target;
+        else if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+  function animateBars(scope) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { scope.querySelectorAll(".bar-fill[data-w]").forEach(function(el) { el.style.width = el.getAttribute("data-w"); }); return; }
+    var bars = scope.querySelectorAll('.bar-fill[data-w]');
+    bars.forEach(function (el, i) {
+      el.style.width = '0%';
+      setTimeout(function () { el.style.width = el.getAttribute('data-w'); }, 60 + i * 70);
+    });
+  }
+  function animatePops(scope, selector, stagger) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { scope.querySelectorAll(selector).forEach(function(el) { el.classList.add("in"); }); return; }
+    var els = scope.querySelectorAll(selector);
+    els.forEach(function (el, i) {
+      el.classList.remove('in');
+      void el.offsetWidth;
+      setTimeout(function () { el.classList.add('in'); }, 40 + i * (stagger || 35));
+    });
+  }
+  function animateRing(scope) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { var settled = scope.querySelector("[data-offset]"); if (settled) settled.setAttribute("stroke-dashoffset", settled.getAttribute("data-offset")); return; }
+    var ring = scope.querySelector('[data-offset]');
+    if (!ring) return;
+    var full = ring.getAttribute('stroke-dasharray').split(/[ ,]/)[0];
+    ring.style.transition = 'none';
+    ring.setAttribute('stroke-dashoffset', full);
+    void ring.offsetWidth;
+    ring.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(0.16,1,0.3,1)';
+    requestAnimationFrame(function () { ring.setAttribute('stroke-dashoffset', ring.getAttribute('data-offset')); });
+  }
+  function animateViewEntrance(view) {
+    var scope = document.getElementById('view-' + view);
+    if (!scope) return;
+    animateCounts(scope);
+    animateBars(scope);
+    animateRing(scope);
+    if (view === 'overview') { drawTrajectoryChart(); }
+    if (view === 'insights') { animatePops(scope, '.scatter-dot', 35); animateDriverBars(scope); }
+    if (view === 'report') { animatePops(scope, '.tl-q, .tl-seg', 18); animatePops(scope, '.level-bar span', 20); }
+    if (view === 'rubric') { animatePops(scope, '.rubric-article', 60); }
+    if (view === 'misconceptions') { animateCounts(scope); animatePops(scope, '.misc-item-card', 40); }
+    if (view === 'behaviour') { animateCounts(scope); animatePops(scope, '.bh-card', 45); }
+  }
+  function animateDriverBars(scope) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { scope.querySelectorAll(".driver-track span[data-w]").forEach(function(el) { el.style.width = el.getAttribute("data-w"); }); return; }
+    scope.querySelectorAll('.driver-track span[data-w]').forEach(function (el, i) {
+      var w = el.getAttribute('data-w');
+      el.style.width = '0%';
+      setTimeout(function () { el.style.width = w; }, 80 + i * 70);
+    });
+  }
+
+  // ---------- Trajectory chart: smooth curves, gradient fill, animated draw, hover tooltip ----------
+  function smoothPath(points) {
+    if (points.length < 2) return '';
+    var d = 'M' + points[0][0] + ',' + points[0][1];
+    for (var i = 0; i < points.length - 1; i++) {
+      var p0 = points[i === 0 ? 0 : i - 1];
+      var p1 = points[i];
+      var p2 = points[i + 1];
+      var p3 = points[i + 2 < points.length ? i + 2 : i + 1];
+      var cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+      var cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+      var cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+      var cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+      d += ' C' + cp1x + ',' + cp1y + ' ' + cp2x + ',' + cp2y + ' ' + p2[0] + ',' + p2[1];
+    }
+    return d;
+  }
+  var TRAJECTORY_DELIVERY = [36, 32, 42, 65, 55, 76, 62, 82, 68, 88, 74, 92];
+  var TRAJECTORY_MASTERY = [26, 24, 32, 48, 42, 55, 48, 60, 52, 65, 58, 70];
+  function drawTrajectoryChart() {
+    var container = document.getElementById('trajectory-chart');
+    if (!container) return;
+    var delivery = TRAJECTORY_DELIVERY, mastery = TRAJECTORY_MASTERY;
+    var w = 400, h = 160, padX = 8, padY = 14, n = delivery.length;
+    var x = function (i) { return padX + (i / (n - 1)) * (w - padX * 2); };
+    var y = function (v) { return padY + (1 - v / 100) * (h - padY * 2); };
+    var dPts = delivery.map(function (v, i) { return [x(i), y(v)]; });
+    var mPts = mastery.map(function (v, i) { return [x(i), y(v)]; });
+    var dPath = smoothPath(dPts);
+    var mPath = smoothPath(mPts);
+    var areaPath = dPath + ' L' + x(n - 1) + ',' + (h - padY) + ' L' + x(0) + ',' + (h - padY) + ' Z';
+    var gridLines = [0.25, 0.5, 0.75].map(function (f) {
+      var gy = padY + f * (h - padY * 2);
+      return '<line x1="' + padX + '" y1="' + gy + '" x2="' + (w - padX) + '" y2="' + gy + '" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 4"/>';
+    }).join('');
+    var dDots = dPts.map(function (p, i) {
+      return '<circle class="anim-pop" cx="' + p[0] + '" cy="' + p[1] + '" r="3" fill="var(--chart-delivery)" stroke="#fff" stroke-width="1.5"/>';
+    }).join('');
+
+    container.innerHTML =
+      '<svg id="traj-svg" viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;height:150px;display:block;overflow:visible;" preserveAspectRatio="none">' +
+        '<defs><linearGradient id="trajFill" x1="0" y1="0" x2="0" y2="1">' +
+          '<stop offset="0%" stop-color="var(--chart-mastery)" stop-opacity="0.22"/>' +
+          '<stop offset="100%" stop-color="var(--chart-mastery)" stop-opacity="0"/>' +
+        '</linearGradient></defs>' +
+        gridLines +
+        '<path id="traj-area" d="' + areaPath + '" fill="url(#trajFill)" stroke="none" style="opacity:0;transition:opacity 0.8s ease 0.3s;"/>' +
+        '<path id="traj-mastery-path" d="' + mPath + '" fill="none" stroke="var(--chart-mastery)" stroke-width="2" stroke-dasharray="5 4" stroke-linecap="round" style="opacity:0;transition:opacity 0.6s ease 0.5s;"/>' +
+        '<path id="traj-delivery-path" d="' + dPath + '" fill="none" stroke="var(--chart-delivery)" stroke-width="2.5" stroke-linecap="round"/>' +
+        dDots +
+        '<line id="traj-crosshair" x1="0" y1="' + padY + '" x2="0" y2="' + (h - padY) + '" stroke="var(--line-strong)" stroke-width="1" opacity="0"/>' +
+        '<circle id="traj-hover-d" r="4.5" fill="var(--chart-delivery)" stroke="#fff" stroke-width="2" opacity="0"/>' +
+        '<circle id="traj-hover-m" r="4" fill="var(--chart-mastery)" stroke="#fff" stroke-width="2" opacity="0"/>' +
+        '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="transparent" id="traj-hit" style="cursor:crosshair;"/>' +
+      '</svg>' +
+      '<div class="chart-tooltip" id="traj-tooltip"></div>';
+
+    // Draw the delivery line in with a stroke-dashoffset wipe, then fade the area/mastery/dots in.
+    var path = document.getElementById('traj-delivery-path');
+    var len = path.getTotalLength();
+    path.style.transition = 'none';
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    void path.getBoundingClientRect();
+    path.style.transition = 'stroke-dashoffset 1.15s cubic-bezier(0.22,1,0.36,1)';
+    requestAnimationFrame(function () {
+      path.style.strokeDashoffset = '0';
+      document.getElementById('traj-area').style.opacity = '1';
+      document.getElementById('traj-mastery-path').style.opacity = '1';
+    });
+    animatePops(container, '.anim-pop', 55);
+
+    // Hover crosshair + tooltip.
+    var hit = document.getElementById('traj-hit');
+    var tooltip = document.getElementById('traj-tooltip');
+    var crosshair = document.getElementById('traj-crosshair');
+    var hoverD = document.getElementById('traj-hover-d');
+    var hoverM = document.getElementById('traj-hover-m');
+    var svg = document.getElementById('traj-svg');
+    function showAt(clientX) {
+      var rect = svg.getBoundingClientRect();
+      var px = (clientX - rect.left) / rect.width * w;
+      var i = Math.round(((px - padX) / (w - padX * 2)) * (n - 1));
+      i = Math.max(0, Math.min(n - 1, i));
+      var dx = x(i);
+      crosshair.setAttribute('x1', dx); crosshair.setAttribute('x2', dx); crosshair.setAttribute('opacity', '1');
+      hoverD.setAttribute('cx', dx); hoverD.setAttribute('cy', y(delivery[i])); hoverD.setAttribute('opacity', '1');
+      hoverM.setAttribute('cx', dx); hoverM.setAttribute('cy', y(mastery[i])); hoverM.setAttribute('opacity', '1');
+      var containerRect = container.getBoundingClientRect();
+      tooltip.style.left = (rect.left - containerRect.left + (dx / w) * rect.width) + 'px';
+      tooltip.style.top = (rect.top - containerRect.top + (y(delivery[i]) / h) * rect.height - 10) + 'px';
+      tooltip.innerHTML = '<b>Lesson ' + (i + 1) + '</b>' +
+        '<div class="tt-row"><span class="tt-dot" style="background:var(--chart-delivery)"></span>Delivery ' + delivery[i] + '</div>' +
+        '<div class="tt-row"><span class="tt-dot" style="background:var(--chart-mastery)"></span>Mastery ' + mastery[i] + '%</div>';
+      tooltip.classList.add('show');
+    }
+    hit.addEventListener('mousemove', function (e) { showAt(e.clientX); });
+    hit.addEventListener('mouseleave', function () {
+      crosshair.setAttribute('opacity', '0'); hoverD.setAttribute('opacity', '0'); hoverM.setAttribute('opacity', '0');
+      tooltip.classList.remove('show');
+    });
+  }
+
+  // ---------- Praise & Sanctions: pending items + today's tally ----------
+  var TYPE_META = {
+    merit: { label: 'Merit', color: 'var(--green)', bg: 'rgba(79,108,85,0.1)', icon: '<circle cx="12" cy="8" r="5"/><path d="M8.5 13 7 22l5-3 5 3-1.5-9"/>' },
+    demerit: { label: 'Demerit', color: 'var(--amber)', bg: 'rgba(152,97,79,0.1)', icon: '<path d="M12 9v4M12 17h.01M10.3 3.9 2.5 18a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>' },
+    detention: { label: 'Detention', color: 'var(--red)', bg: 'rgba(178,83,68,0.1)', icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>' },
+    removal: { label: 'Room removal', color: 'var(--red)', bg: 'rgba(178,83,68,0.1)', icon: '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>' }
+  };
+  var pendingItems = [
+    { id: 'p1', type: 'merit', student: 'Priya', time: '12:08', quote: 'Great explanation of the bonding diagram, Priya.', lesson: 'Balancing chemical equations · Science · Year 9' },
+    { id: 'p2', type: 'demerit', student: 'Theo', time: '19:02', quote: "Theo, that's a demerit — phones away please.", lesson: 'Balancing chemical equations · Science · Year 9' },
+    { id: 'p3', type: 'merit', student: 'Grace', time: '6:40', quote: 'Grace, merit for the fully labelled diagram.', lesson: 'Ratio and proportion problems · Maths · Year 8' },
+    { id: 'p4', type: 'detention', student: 'Max', time: '15:21', quote: "Max, that's a detention — see me after period 5.", lesson: 'Causes of the First World War · History · Year 7' }
+  ];
+  var tally = { Jamal: { merit: 3 }, Priya: { merit: 2 }, Ben: { demerit: 2, detention: 1 }, Theo: { merit: 1, demerit: 1 }, Max: { removal: 1 } };
+
+  function initials(name) { return name.split(/\s+/).map(function (p) { return p[0]; }).join('').slice(0, 2).toUpperCase(); }
+  function renderBehaviourStats() {
+    var root = document.getElementById('behaviour-stats');
+    if (!root) return;
+    var totals = { merit: 0, demerit: 0, detention: 0, removal: 0 };
+    Object.keys(tally).forEach(function (s) { Object.keys(tally[s]).forEach(function (k) { totals[k] += tally[s][k]; }); });
+    var top = Object.keys(tally).reduce(function (best, s) {
+      var m = tally[s].merit || 0;
+      return (!best || m > best.m) ? { name: s, m: m } : best;
+    }, null);
+    root.innerHTML =
+      '<div class="card stat"><div class="eyebrow">Needs review</div><div class="stat-value" style="color:var(--amber)" data-count="' + pendingItems.length + '">0</div><div class="stat-hint">detections to confirm</div></div>' +
+      '<div class="card stat"><div class="eyebrow">Merits today</div><div class="stat-value" style="color:var(--green)" data-count="' + totals.merit + '">0</div><div class="stat-hint">confirmed only</div></div>' +
+      '<div class="card stat"><div class="eyebrow">Sanctions today</div><div class="stat-value" style="color:var(--red)" data-count="' + (totals.demerit + totals.detention + totals.removal) + '">0</div><div class="stat-hint">demerits + detentions + removals</div></div>' +
+      '<div class="card stat"><div class="eyebrow">Top performer</div><div class="stat-value" style="font-size:22px;">' + (top && top.m ? top.name : '—') + '</div><div class="stat-hint">' + (top && top.m ? top.m + ' merit' + (top.m === 1 ? '' : 's') : 'no merits yet') + '</div></div>';
+    animateCounts(root);
+  }
+  function renderPending() {
+    var list = document.getElementById('pending-list');
+    var empty = document.getElementById('pending-empty');
+    if (!list) return;
+    if (!pendingItems.length) { list.innerHTML = ''; empty.style.display = 'flex'; return; }
+    empty.style.display = 'none';
+    list.innerHTML = pendingItems.map(function (item) {
+      var m = TYPE_META[item.type];
+      return '<div class="card bh-card anim-fade" style="border-left-color:' + m.color + ';" data-pending-id="' + item.id + '">' +
+        '<div class="bh-card-top">' +
+          '<span class="bh-avatar" style="background:' + m.bg + ';color:' + m.color + ';">' + initials(item.student) + '</span>' +
+          '<div><div class="bh-card-name">' + item.student + '</div><div class="bh-card-sub">' + m.label + ' · ' + item.time + '</div></div>' +
+        '</div>' +
+        '<p class="bh-quote">“' + item.quote + '”</p>' +
+        '<div class="bh-lesson">' + item.lesson + '</div>' +
+        '<div class="bh-actions">' +
+          '<button class="btn-approve" onclick="approvePending(\'' + item.id + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Approve</button>' +
+          '<button class="btn-deny" onclick="denyPending(\'' + item.id + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Deny</button>' +
+        '</div></div>';
+    }).join('');
+    animatePops(list, '.anim-fade', 45);
+  }
+  function renderLeaderboard() {
+    var root = document.getElementById('leaderboard');
+    if (!root) return;
+    var students = Object.keys(tally).sort(function (a, b) {
+      var score = function (s) { var r = tally[s]; return (r.merit || 0) - (r.demerit || 0) - (r.detention || 0) * 2 - (r.removal || 0) * 2; };
+      return score(b) - score(a);
+    });
+    if (!students.length) {
+      root.innerHTML = '<div class="empty-card" style="padding:28px;"><div>Nothing confirmed yet today.</div></div>';
+      return;
+    }
+    root.innerHTML = students.map(function (s) {
+      var row = tally[s];
+      var badges = [
+        row.merit ? '<span class="lb-badge" style="background:rgba(79,108,85,0.1);color:var(--green);">' + row.merit + ' merit' + (row.merit === 1 ? '' : 's') + '</span>' : '',
+        row.demerit ? '<span class="lb-badge" style="background:rgba(152,97,79,0.1);color:var(--amber);">' + row.demerit + ' demerit' + (row.demerit === 1 ? '' : 's') + '</span>' : '',
+        row.detention ? '<span class="lb-badge" style="background:rgba(178,83,68,0.1);color:var(--red);">' + row.detention + ' detention' + (row.detention === 1 ? '' : 's') + '</span>' : '',
+        row.removal ? '<span class="lb-badge" style="background:rgba(178,83,68,0.1);color:var(--red);">' + row.removal + ' removal' + (row.removal === 1 ? '' : 's') + '</span>' : ''
+      ].join('');
+      return '<div class="lb-row"><span class="bh-avatar sm" style="background:var(--well);color:var(--muted);">' + initials(s) + '</span><span class="lb-name">' + s + '</span><div class="lb-badges">' + badges + '</div></div>';
+    }).join('');
+  }
+  function approvePending(id) {
+    var item = pendingItems.find(function (p) { return p.id === id; });
+    if (!item) return;
+    var card = document.querySelector('[data-pending-id="' + id + '"]');
+    if (card) card.classList.add('removing');
+    showToast('Approved — added to ' + item.student + '’s record');
+    setTimeout(function () {
+      tally[item.student] = tally[item.student] || {};
+      tally[item.student][item.type] = (tally[item.student][item.type] || 0) + 1;
+      pendingItems = pendingItems.filter(function (p) { return p.id !== id; });
+      renderPending();
+      renderLeaderboard();
+      renderBehaviourStats();
+    }, card ? 220 : 0);
+  }
+  function denyPending(id) {
+    var item = pendingItems.find(function (p) { return p.id === id; });
+    var card = document.querySelector('[data-pending-id="' + id + '"]');
+    if (card) card.classList.add('removing');
+    if (item) showToast('Dismissed — ' + item.student + '’s record unchanged');
+    setTimeout(function () {
+      pendingItems = pendingItems.filter(function (p) { return p.id !== id; });
+      renderPending();
+      renderBehaviourStats();
+    }, card ? 220 : 0);
+  }
+  renderPending();
+  renderLeaderboard();
+  renderBehaviourStats();
+
+  // ---------- Behaviour confirm / dismiss ----------
+  function resolveBehaviour(btn, status) {
+    var item = btn.closest('[data-item]');
+    var note = item.querySelector('[data-status]');
+    var actions = item.querySelector('[data-actions]');
+    if (status === 'confirmed') {
+      note.textContent = '✓ Confirmed — added to today’s tally';
+      note.style.color = 'var(--green)';
+    } else {
+      note.textContent = 'Dismissed';
+      note.style.color = 'var(--dim)';
+    }
+    item.classList.add('resolved');
+    actions.innerHTML = '';
+  }
+
+  // ---------- Rubric page: verbatim dimension copy ----------
+  var LEVEL_NAMES = ['Emerging', 'Developing', 'Secure', 'Exemplary'];
+  var LEVEL_COLOR = ['var(--red)', 'var(--amber)', 'var(--indigo)', 'var(--green)'];
+  var RUBRIC = [
+    { name: 'Questioning depth', weight: 1.25, reliability: 'high',
+      evidence: 'Effective teachers ask many questions and a meaningful share probe reasoning (why/how/explain), not just recall.',
+      sources: ['Rosenshine (2012) Principle 3', 'Coe et al. (2020) Great Teaching Toolkit 4.1', "Bloom's taxonomy"],
+      levels: ['Few questions; almost all closed recall or rhetorical.', "Regular questions but mostly closed; occasional 'why'.", 'Frequent questions with a clear share of open and reasoning questions.', 'Questions sequenced from recall to reasoning; students asked to justify, compare, evaluate.'] },
+    { name: 'Checking for understanding', weight: 1.25, reliability: 'high',
+      evidence: 'Checking all students (not just volunteers) lets the teacher adapt before misconceptions embed.',
+      sources: ['Rosenshine (2012) Principle 6', 'Lemov, Teach Like a Champion: Cold Call, Show Me', 'Wiliam (2011) Embedded Formative Assessment'],
+      levels: ["No systematic checks; relies on 'any questions?' or volunteers.", 'Occasional checks, mostly hands-up or single students.', 'Regular whole-class checks (mini-whiteboards, cold call, hinge questions).', 'Frequent whole-class checks with visible adaptation based on responses.'] },
+    { name: 'Explanation & modelling', weight: 1, reliability: 'high',
+      evidence: 'Clear, small-step explanations with worked examples and explicit success criteria reduce cognitive load.',
+      sources: ['Rosenshine (2012) Principles 2 & 4', 'Sweller, Cognitive Load Theory', 'Coe et al. (2020) GTT 3.1'],
+      levels: ['Explanations unstructured; no worked example or success criteria.', 'Some structure; worked example or objective present but thin.', 'Clear objective, sequenced steps and at least one narrated worked example.', 'Expert thinking made visible; multiple examples/non-examples; steps explicitly signposted.'] },
+    { name: 'Retrieval & review', weight: 0.75, reliability: 'high',
+      evidence: 'Daily review and retrieval practice strengthen long-term memory.',
+      sources: ['Rosenshine (2012) Principle 1', 'Roediger & Karpicke (2006)', 'EEF Cognitive Science in the Classroom (2021)'],
+      levels: ['No reference to prior learning.', 'Brief mention of prior learning without student retrieval.', 'Students actively retrieve prior learning (quiz, recall questions).', 'Spaced retrieval woven through the lesson and linked to new content.'] },
+    { name: 'Feedback quality', weight: 1, reliability: 'medium',
+      evidence: "Specific, task-focused feedback moves learning; generic praise ('good', 'well done') carries little information.",
+      sources: ['Hattie & Timperley (2007)', 'EEF Teacher Feedback to Improve Pupil Learning (2021)'],
+      levels: ['Little feedback, or almost entirely generic praise/criticism.', 'Mix of generic and some task-specific feedback.', 'Mostly specific feedback naming what was right/wrong and why.', 'Specific feedback that prompts students to act on it (improve, re-attempt, extend).'] },
+    { name: 'Wait time', weight: 0.75, reliability: 'medium',
+      evidence: 'Pausing ≥3 seconds after a question increases the length and quality of student answers.',
+      sources: ['Rowe (1986)', 'Tobin (1987)'],
+      levels: ['Mean pause after questions under 1s; teacher often answers own questions.', 'Mean pause 1–2s.', 'Mean pause 2–3s.', "Mean pause ≥3s with explicit 'thinking time' signalled."] },
+    { name: 'Guided → independent practice', weight: 1, reliability: 'medium',
+      evidence: 'Guided practice followed by independent practice builds fluency; teacher talk should not crowd out student work.',
+      sources: ['Rosenshine (2012) Principles 5, 9 & 10', 'Coe et al. (2020) GTT 4.4'],
+      levels: ['Teacher talks throughout; no clear student practice.', 'Some practice, but little guidance or scaffolding.', "Clear guided practice ('we do') then independent work ('you do').", 'Scaffolds deliberately faded; practice monitored and adjusted.'] }
+  ];
+  function renderRubric() {
+    var root = document.getElementById('rubric-list');
+    if (!root) return;
+    root.innerHTML = RUBRIC.map(function (d) {
+      var levels = d.levels.map(function (l, li) {
+        return '<div class="level-card"><div class="lc-title" style="color:' + LEVEL_COLOR[li] + '">' + (li + 1) + ' · ' + LEVEL_NAMES[li] + '</div><div class="lc-desc">' + l + '</div></div>';
+      }).join('');
+      var sources = d.sources.map(function (s) { return '<span class="chip">' + s + '</span>'; }).join('');
+      return '<article class="card rubric-article anim-fade">' +
+        '<div class="rh"><div><h2>' + d.name + '</h2><p class="revidence">' + d.evidence + '</p></div>' +
+        '<div style="display:flex;gap:8px;flex-shrink:0;"><span class="chip">weight ×' + d.weight + '</span><span class="chip">audio reliability: ' + d.reliability + '</span></div></div>' +
+        '<div class="level-grid">' + levels + '</div>' +
+        '<div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;">' + sources + '</div>' +
+      '</article>';
+    }).join('');
+  }
+  renderRubric();
+
+  // ---------- Transcript view: tabs + search + highlighted question substrings ----------
+  var QTYPE_COLOR = { 'higher-order': 'var(--green)', open: 'var(--indigo)', closed: 'var(--violet)', procedural: 'var(--dim)', rhetorical: 'var(--amber)' };
+  var transcriptLines = [
+    { ts: '0:00', speaker: 'teacher', text: "Okay, settle down. Books out. Today we're doing adding fractions, okay?" },
+    { ts: '0:04', speaker: 'teacher', text: "So fractions, you've all done fractions before, right? Right. So what you do is you get the bottom numbers the same.",
+      q: { text: "So fractions, you've all done fractions before, right?", type: 'rhetorical', target: null } },
+    { ts: '0:13', speaker: 'teacher', text: 'Everyone ok? Good.', q: { text: 'Everyone ok?', type: 'procedural', target: null } },
+    { ts: '0:14', speaker: 'teacher', text: "Watch me first. I'm thinking: two thirds plus one quarter. I can't add these yet — the pieces are different sizes." },
+    { ts: '0:23', speaker: 'teacher', text: 'Step one, I find a common denominator. Twelve works for both.' },
+    { ts: '0:42', speaker: 'teacher', text: 'Why would it be wrong to just add the tops and the bottoms?',
+      q: { text: 'Why would it be wrong to just add the tops and the bottoms?', type: 'higher-order', target: null } },
+    { ts: '1:05', speaker: 'student', text: "Three sevenths is smaller than two thirds so it can't be the answer." },
+    { ts: '1:27', speaker: 'teacher', text: 'Jamal, what did your partner say?',
+      q: { text: 'Jamal, what did your partner say?', type: 'closed', target: 'cold-call' } },
+    { ts: '1:46', speaker: 'teacher', text: "I like how you used an estimate to check. That's a brilliant reasoning move. That's a merit for you, Jamal." },
+    { ts: '2:10', speaker: 'teacher', text: 'Does anyone know what would happen if we used twelve instead of six?',
+      q: { text: 'Does anyone know what would happen if we used twelve instead of six?', type: 'higher-order', target: 'hands-up' } }
+  ];
+  var tvFilter = 'all', tvQuery = '';
+  function highlightLine(line) {
+    if (!line.q) return escapeHtml(line.text);
+    var idx = line.text.indexOf(line.q.text);
+    if (idx < 0) return escapeHtml(line.text);
+    var before = escapeHtml(line.text.slice(0, idx));
+    var after = escapeHtml(line.text.slice(idx + line.q.text.length));
+    var color = QTYPE_COLOR[line.q.type];
+    var title = line.q.target ? line.q.type + ' · ' + line.q.target.replace('-', ' ') : line.q.type;
+    return before + '<mark class="tv-mark" style="background:color-mix(in srgb, ' + color + ' 20%, transparent);box-shadow:inset 0 -2px 0 ' + color + ';" title="' + title + '">' + escapeHtml(line.q.text) + '</mark>' + after;
+  }
+  function escapeHtml(s) { return s.replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+  function renderTranscript() {
+    var root = document.getElementById('tv-lines');
+    if (!root) return;
+    var visible = transcriptLines.filter(function (l) {
+      if (tvFilter === 'questions' && !l.q) return false;
+      if (tvFilter === 'students' && l.speaker !== 'student') return false;
+      if (tvQuery && l.text.toLowerCase().indexOf(tvQuery.toLowerCase()) < 0) return false;
+      return true;
+    });
+    if (!visible.length) { root.innerHTML = '<div style="padding:24px 16px;color:var(--muted);font-size:13px;">Nothing matches.</div>'; return; }
+    root.innerHTML = visible.map(function (l) {
+      return '<div class="tv-line"><div class="tv-ts">' + l.ts + '</div><div><div class="tv-speaker ' + l.speaker + '">' + l.speaker + '</div><p class="tv-text">' + highlightLine(l) + '</p></div></div>';
+    }).join('');
+  }
+  document.querySelectorAll('#tv-tabs .pill-tab').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tvFilter = btn.getAttribute('data-filter');
+      document.querySelectorAll('#tv-tabs .pill-tab').forEach(function (b) { b.classList.toggle('active', b === btn); });
+      renderTranscript();
+    });
+  });
+  document.getElementById('tv-search').addEventListener('input', function (e) { tvQuery = e.target.value; renderTranscript(); });
+  renderTranscript();
+
+  // ---------- Misconceptions: seeded demo data + what the exit-ticket form adds ----------
+  var NAMES_POOL = ['Amara', 'Jamal', 'Priya', 'Tom', 'Sofia', 'Leo', 'Maya', 'Ethan', 'Zara', 'Noah', 'Ivy', 'Kai', 'Ruby', 'Omar', 'Ella', 'Finn', 'Aisha', 'Sam', 'Grace', 'Theo', 'Hana', 'Max', 'Lily', 'Ravi', 'Chloe', 'Ben'];
+  var misconceptionsByClass = {
+    'Year 7': [
+      { text: 'Confuses convergent and divergent boundary diagrams', count: 5, lessons: [{ title: 'Plate boundaries and hazards', sub: 'Geography · 11 Sept' }],
+        fix: 'Give students two labelled diagrams side by side and have them physically push their hands together (convergent) and pull apart (divergent) while saying the term aloud — tying the word to the motion fixes the mix-up faster than more diagram practice.',
+        students: [
+          { name: 'Ella', answer: "Drew the plates moving apart, but labelled the diagram 'convergent boundary'.", why: 'Convergent plates move towards each other; divergent plates move apart. The arrows and the label were mismatched.' },
+          { name: 'Finn', answer: 'Said a mid-ocean ridge forms at a convergent boundary.', why: 'Mid-ocean ridges form where plates diverge and magma rises to fill the gap — the opposite of convergence.' },
+          { name: 'Aisha', answer: 'Matched the term "subduction zone" to a divergent boundary.', why: 'Subduction only happens where plates converge and one is forced beneath the other.' },
+          { name: 'Sam', answer: 'Labelled a fold-mountain diagram (like the Andes) as divergent.', why: 'Mountain ranges like the Andes form at convergent boundaries, where crust is compressed and pushed upward.' },
+          { name: 'Grace', answer: 'Wrote "divergent means the plates crash together".', why: "That's the definition of convergent — divergent specifically means the plates are moving apart." }
+        ] }
+    ],
+    'Year 8': [
+      { text: 'Treats the ratio as a fraction of one quantity rather than the whole', count: 9, lessons: [{ title: 'Ratio and proportion problems', sub: 'Maths · 14 Sept' }],
+        fix: 'Re-teach with bar models before any calculation: draw the ratio as labelled boxes, count the total number of boxes first, then divide. Doing this physically for 3–4 examples before returning to numbers alone tends to clear it up for most of the class.',
+        students: [
+          { name: 'Hana', answer: 'For 20 sweets split 2:3, wrote "20 ÷ 2 = 10 each".', why: 'Divided by one part of the ratio instead of the total number of parts (2 + 3 = 5).' },
+          { name: 'Max', answer: 'Split £40 in the ratio 3:5 as "£40 ÷ 3 = £13.33 each".', why: 'Treated the ratio as an even split rather than sharing proportionally across all 8 parts.' },
+          { name: 'Lily', answer: 'For a 1:4 ratio, said "1 is a quarter of the total".', why: '1:4 means 1 part out of 5 total parts, not 1 part out of 4.' },
+          { name: 'Ravi', answer: 'Scaled only the first number when increasing a recipe in ratio.', why: 'Both sides of a ratio must be scaled by the same multiplier to stay equivalent.' },
+          { name: 'Chloe', answer: 'Said a 3:1 ratio means "3 out of 4 are the first thing" — but then divided the total by 1 instead of 4.', why: 'The whole has to be split into all the parts of the ratio (3 + 1 = 4) before multiplying back up.' },
+          { name: 'Ben', answer: 'Divided the total by the larger ratio number only.', why: 'Needs to divide by the sum of all parts in the ratio, not just the biggest one.' },
+          { name: 'Theo', answer: 'Thought doubling one side of a ratio doubles the total.', why: 'Only works if both sides are doubled together — doubling one side changes the ratio itself.' },
+          { name: 'Omar', answer: 'Added the ratio numbers together and called that the answer.', why: 'The sum of the parts (e.g. 2 + 3 = 5) is a step, not the final shared amount.' },
+          { name: 'Kai', answer: 'Used the ratio as a fraction of only one named quantity.', why: 'A ratio compares two quantities to each other, not one quantity to itself.' }
+        ] },
+      { text: 'Adds all side lengths instead of splitting into rectangles', count: 5, lessons: [{ title: 'Area of compound shapes', sub: 'Maths · 7 Sept' }],
+        fix: 'Have students physically cut a paper L-shape into two rectangles before any calculation, labelling each piece’s dimensions. Separating "find the missing sides" from "multiply and add" into two explicit steps removes most of the confusion.',
+        students: [
+          { name: 'Zara', answer: 'Added every labelled side length together for an L-shape and called it the area.', why: "That calculates perimeter, not area — the shape needs splitting into rectangles and each one's area found separately." },
+          { name: 'Noah', answer: 'Multiplied the two outer bounding dimensions without subtracting the missing corner.', why: 'Treated the L-shape as a full rectangle, ignoring the cut-out section.' },
+          { name: 'Ivy', answer: 'Split the shape into two rectangles but used the wrong side length for the second one.', why: 'Needed to work out the missing side length from the given dimensions before multiplying.' },
+          { name: 'Ruby', answer: 'Found the area of one rectangle only and stopped.', why: 'A compound shape needs every rectangle it was split into added together.' },
+          { name: 'Omar', answer: 'Added the two rectangle areas but also added the overlap twice.', why: "When splitting a compound shape, each square unit should be counted exactly once." }
+        ] }
+    ],
+    'Year 9': [
+      { text: 'Changes a subscript instead of adding a coefficient', count: 6, lessons: [{ title: 'Balancing chemical equations', sub: 'Science · 18 Sept' }],
+        fix: 'Use molecule model kits or drawings: show that changing a subscript builds a different molecule entirely, while a coefficient just means "more copies of the same molecule." A quick card sort — "same substance" vs "different substance" — makes the distinction stick.',
+        students: [
+          { name: 'Amara', answer: 'Balanced H₂ + O₂ → H₂O by changing it to H₂ + O₂ → H₂O₂.', why: 'Changing a subscript changes the substance itself (water becomes hydrogen peroxide) — only coefficients in front of formulae may change.' },
+          { name: 'Jamal', answer: 'Wrote 2H₂ + O₂ → 2H₂O₂ to try to balance oxygen.', why: 'Should have used a coefficient of 2 in front of H₂O, not altered the subscript to O₂.' },
+          { name: 'Priya', answer: 'Changed CO₂ to CO₄ to balance an equation with excess oxygen.', why: 'CO₄ is not a real compound — the fix is a coefficient in front of CO₂, not a new subscript.' },
+          { name: 'Tom', answer: 'Balanced Mg + O₂ → MgO by writing MgO₂.', why: 'MgO₂ changes what the compound is; the equation needed 2Mg + O₂ → 2MgO instead.' },
+          { name: 'Sofia', answer: 'Said "I made the big number next to oxygen bigger to match".', why: 'Describes editing the subscript rather than placing a coefficient before the whole formula.' },
+          { name: 'Leo', answer: 'Left an equation unbalanced rather than risk "changing the formula".', why: 'Correct instinct not to touch the formula, but missed that a coefficient in front is how balancing is done instead.' }
+        ] },
+      { text: 'Thinks plants only photosynthesise and don’t respire', count: 4, lessons: [{ title: 'Photosynthesis and limiting factors', sub: 'Science · 4 Sept' }],
+        fix: 'Show a 24-hour gas-exchange graph for a plant and ask students to shade when each process is happening — they’ll see respiration runs continuously while photosynthesis switches off in the dark, correcting the "plants only photosynthesise" idea visually.',
+        students: [
+          { name: 'Maya', answer: 'Wrote "plants breathe in CO₂ and never give it out".', why: 'Plants respire continuously, releasing CO₂, as well as photosynthesising in daylight.' },
+          { name: 'Ethan', answer: 'Said at night "the plant does nothing" because there is no light.', why: 'Respiration continues at night — only photosynthesis stops without light.' },
+          { name: 'Noah', answer: 'Drew a diagram with only one arrow: CO₂ in, O₂ out, all the time.', why: 'Misses the respiration process running in parallel, using O₂ and releasing CO₂.' },
+          { name: 'Kai', answer: 'Said oxygen production means "plants don’t need oxygen".', why: 'Plants need oxygen for respiration just like animals do — photosynthesis and respiration are separate processes.' }
+        ] }
+    ],
+    'Year 10': [
+      { text: 'Attributes improved health solely to medicine, not sanitation', count: 3, lessons: [{ title: 'The Industrial Revolution and public health', sub: 'History · 21 Sept' }],
+        fix: 'Build a simple timeline together: plot the fall in death rates against the dates of the sewer system vs the dates real cholera/antibiotic treatments arrived. Seeing the sanitation work predate the medicine by decades is more convincing than being told it.',
+        students: [
+          { name: 'Ruby', answer: 'Wrote "death rates fell because doctors got better at treating disease".', why: 'Much of the fall predates effective medical treatment — clean water and sewers removed the source of disease (e.g. cholera) before antibiotics existed.' },
+          { name: 'Omar', answer: "Credited vaccination alone for the decline in cholera deaths.", why: 'There was no cholera vaccine in this period — the key change was Bazalgette’s sewer system separating waste from drinking water.' },
+          { name: 'Ella', answer: 'Said "hospitals got bigger" as the main reason for improved health.', why: 'Hospital capacity mattered less here than public sanitation infrastructure removing the causes of disease at a population level.' }
+        ] },
+      { text: 'Identifies a technique but doesn’t link it to effect', count: 8, lessons: [{ title: 'Analysing language in Macbeth Act 1', sub: 'English · 28 Aug' }],
+        fix: 'Drill the sentence frame "The writer uses [technique] to ___, which makes the reader feel/think ___" on 3–4 quotes as a whole-class warm-up before independent analysis — most students can spot the device, the gap is purely in the connective phrasing.',
+        students: [
+          { name: 'Finn', answer: 'Wrote "Shakespeare uses a metaphor here" and stopped.', why: 'Naming the device is only half the analysis — needs to say what effect it creates for the reader/audience.' },
+          { name: 'Aisha', answer: 'Labelled the imagery as "dark and blood-related" with no further comment.', why: 'Should connect the pattern of blood imagery to Macbeth’s growing guilt or the inevitability of violence.' },
+          { name: 'Sam', answer: 'Quoted "fair is foul, and foul is fair" and called it "paradox" with no explanation.', why: 'Needed to explain how the paradox unsettles the audience and signals a world where moral order is inverted.' },
+          { name: 'Theo', answer: 'Identified the witches’ rhyming couplets but didn’t say why.', why: 'The sing-song rhythm creates an eerie, incantatory effect — distinguishing their speech from the other characters.' },
+          { name: 'Hana', answer: 'Spotted repetition of "when" in the opening but left it uninterpreted.', why: 'Repetition here builds ritualistic, chant-like pacing that foreshadows supernatural control over events.' },
+          { name: 'Max', answer: 'Noted short sentences in a tense scene without saying what they do.', why: 'Short sentences speed up pacing and mirror characters’ urgency or panic.' },
+          { name: 'Lily', answer: 'Wrote "this is personification" for the storm imagery, nothing more.', why: 'Personifying the storm links the natural world’s turmoil to the political and moral chaos in the play.' },
+          { name: 'Ravi', answer: 'Labelled dramatic irony correctly but didn’t explain the tension it creates.', why: 'Needed to say how the audience knowing more than a character builds suspense or dread.' }
+        ] }
+    ]
+  };
+
+  function classSlug(yearGroup) {
+    return (yearGroup || 'unassigned').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'unassigned';
+  }
+
+  // Free-text, one per line. A trailing "x6" or "(6 students)" is read off as a count;
+  // otherwise the whole line is the description. No NLP/fuzzy clustering — exact text match only.
+  function parseMisconceptionLines(raw) {
+    return raw.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean).map(function (line) {
+      var m = line.match(/^(.*?)[\s(]*(?:x\s?(\d+)|(\d+)\s*students?)\)?\s*$/i);
+      if (m && m[1].trim()) {
+        var count = parseInt(m[2] || m[3], 10);
+        return { text: m[1].trim().replace(/[-–—,]\s*$/, ''), count: isFinite(count) ? count : 1 };
+      }
+      return { text: line, count: 1 };
+    });
+  }
+
+  // No real per-student transcript to draw from for a freshly-typed misconception, so a
+  // plausible one is synthesised from whichever students scored below the mastery threshold —
+  // clearly a stand-in, same idea as the rest of this prototype's "fake but functional" data.
+  function synthesizeStudents(text, count, strugglers) {
+    var pool = (strugglers && strugglers.length ? strugglers : NAMES_POOL).slice(0, Math.max(count, 1));
+    return pool.map(function (name) {
+      return { name: name, answer: 'Answer on the exit ticket matched this pattern: "' + text + '".', why: 'Flagged by the teacher while marking — reasoning not captured beyond the note above.' };
+    });
+  }
+  // A generic starting point when there's no hand-authored fix for a freshly-typed misconception —
+  // nudges the teacher towards re-teaching with a worked example rather than just re-marking.
+  function synthesizeFix(text) {
+    return 'Re-teach with a worked example that contrasts the correct method against this exact error ("' + text + '"), then set one quick check question that isolates just this step before moving on.';
+  }
+  function mergeMisconceptions(yearGroup, parsed, lessonMeta, strugglers) {
+    var items = misconceptionsByClass[yearGroup] = misconceptionsByClass[yearGroup] || [];
+    parsed.forEach(function (p) {
+      var key = p.text.toLowerCase();
+      var existing = items.find(function (it) { return it.text.toLowerCase() === key; });
+      var newStudents = synthesizeStudents(p.text, p.count, strugglers);
+      if (existing) {
+        existing.count += p.count;
+        existing.lessons.push(lessonMeta);
+        existing.students = (existing.students || []).concat(newStudents);
+      } else {
+        items.push({ text: p.text, count: p.count, lessons: [lessonMeta], students: newStudents, fix: synthesizeFix(p.text) });
+      }
+    });
+    items.sort(function (a, b) { return b.count - a.count; });
+  }
+
+  var mcFilter = 'all';
+  function severity(count) {
+    if (count >= 7) return { bg: 'rgba(178,83,68,0.1)', color: 'var(--red)' };
+    if (count >= 4) return { bg: 'rgba(152,97,79,0.1)', color: 'var(--amber)' };
+    return { bg: 'rgba(202,113,95,0.1)', color: 'var(--indigo)' };
+  }
+  function renderMiscStats() {
+    var root = document.getElementById('misc-stats');
+    if (!root) return;
+    var classes = Object.keys(misconceptionsByClass).filter(function (c) { return misconceptionsByClass[c].length; });
+    var allItems = [].concat.apply([], classes.map(function (c) { return misconceptionsByClass[c]; }));
+    var totalStudents = allItems.reduce(function (a, it) { return a + it.count; }, 0);
+    var topClass = classes.reduce(function (best, c) {
+      var sum = misconceptionsByClass[c].reduce(function (a, it) { return a + it.count; }, 0);
+      return (!best || sum > best.sum) ? { cls: c, sum: sum } : best;
+    }, null);
+    root.innerHTML =
+      '<div class="card stat"><div class="eyebrow">Misconceptions</div><div class="stat-value" data-count="' + allItems.length + '">0</div><div class="stat-hint">distinct patterns tracked</div></div>' +
+      '<div class="card stat"><div class="eyebrow">Students affected</div><div class="stat-value" style="color:var(--heading-accent)" data-count="' + totalStudents + '">0</div><div class="stat-hint">across all classes</div></div>' +
+      '<div class="card stat"><div class="eyebrow">Classes</div><div class="stat-value" data-count="' + classes.length + '">0</div><div class="stat-hint">with notes on file</div></div>' +
+      '<div class="card stat"><div class="eyebrow">Needs attention most</div><div class="stat-value" style="font-size:22px;color:var(--amber);">' + (topClass ? topClass.cls : '—') + '</div><div class="stat-hint">' + (topClass ? topClass.sum + ' students affected' : 'no data yet') + '</div></div>';
+    animateCounts(root);
+  }
+  function renderMiscFilters() {
+    var root = document.getElementById('mc-filters');
+    if (!root) return;
+    var classes = Object.keys(misconceptionsByClass).filter(function (c) { return misconceptionsByClass[c].length; }).sort();
+    var tabs = ['all'].concat(classes);
+    root.innerHTML = tabs.map(function (t) {
+      var label = t === 'all' ? 'All classes' : t;
+      return '<button class="mc-filter-pill' + (mcFilter === t ? ' active' : '') + '" onclick="setMiscFilter(\'' + t.replace(/'/g, "\\'") + '\')">' + label + '</button>';
+    }).join('');
+  }
+  function setMiscFilter(f) {
+    mcFilter = f;
+    renderMiscFilters();
+    renderMisconceptions();
+    animatePops(document.getElementById('view-misconceptions'), '.misc-item-card', 40);
+  }
+  function renderMisconceptions() {
+    var root = document.getElementById('misc-groups');
+    if (!root) return;
+    var classes = Object.keys(misconceptionsByClass).filter(function (c) { return misconceptionsByClass[c].length; }).sort();
+    if (mcFilter !== 'all') classes = classes.filter(function (c) { return c === mcFilter; });
+    if (!classes.length) {
+      root.innerHTML = '<p class="footnote" style="margin-top:0;">No misconceptions noted yet — add them when you upload an exit ticket.</p>';
+      return;
+    }
+    root.innerHTML = classes.map(function (cls) {
+      var items = misconceptionsByClass[cls];
+      var slug = classSlug(cls);
+      var rows = items.map(function (it, i) {
+        var lessonChips = it.lessons.map(function (l) { return '<span class="chip">' + l.title + '</span>'; }).join('');
+        var hasDetail = it.students && it.students.length;
+        var cardId = 'mi-' + slug + '-' + i;
+        var sev = severity(it.count);
+        return '<div class="card misc-item-card anim-fade' + (it.resolved ? ' resolved' : '') + '" id="' + cardId + '">' +
+          '<div class="misc-item-header" style="cursor:default;">' +
+            '<div class="mc-badge" style="background:' + sev.bg + ';color:' + sev.color + ';"><b>' + it.count + '</b><span>students</span></div>' +
+            '<div class="misc-item">' +
+              '<div><div class="misc-text">' + it.text + '</div>' +
+              '<div class="misc-chips"><span class="chip">' + it.lessons.length + ' lesson' + (it.lessons.length === 1 ? '' : 's') + '</span>' + lessonChips + '</div></div>' +
+            '</div>' +
+            (it.resolved
+              ? '<button class="mc-resolved-badge" onclick="expandMisconception(\'' + cardId + '\', \'' + cls.replace(/'/g, "\\'") + '\', ' + i + ')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Addressed</button>'
+              : (hasDetail ? '<button class="mc-details-btn" onclick="expandMisconception(\'' + cardId + '\', \'' + cls.replace(/'/g, "\\'") + '\', ' + i + ')">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>' : '')) +
+          '</div>' +
+        '</div>';
+      }).join('');
+      return '<div class="misc-class-group" id="' + slug + '">' +
+        (mcFilter === 'all' ? '<div class="eyebrow" style="margin-bottom:10px;">' + cls + '</div>' : '') +
+        '<div class="mc-grid">' + rows + '</div>' +
+      '</div>';
+    }).join('');
+  }
+  function goToMisconceptions(cls) {
+    goTo('misconceptions');
+    setTimeout(function () { setMiscFilter(cls); }, 50);
+  }
+
+  // ---------- Misconception detail: expands inline beneath the card, no popup ----------
+  function renderMisconceptionDetail(item, cardId, cls, i) {
+    var fix = item.fix
+      ? '<div class="mm-fix"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--chart-delivery)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>' +
+        '<div><b>Try this</b><p>' + item.fix + '</p></div></div>'
+      : '';
+    var resolveBtn = (!item.resolved && cardId && cls && i !== undefined)
+      ? '<button class="mc-resolve-btn" onclick="resolveMisconception(\'' + cardId + '\', \'' + cls.replace(/'/g, "\\'") + '\', ' + i + ')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Mark addressed</button>'
+      : '';
+    return fix + renderStudentList(item.students) + resolveBtn;
+  }
+  function renderStudentList(students) {
+    return (students || []).map(function (s) {
+      return '<div class="mm-student">' +
+        '<div class="mm-avatar">' + s.name.charAt(0) + '</div>' +
+        '<div class="mm-body"><div class="mm-name">' + s.name + '</div>' +
+          '<div class="mm-answer">“' + s.answer + '”</div>' +
+          '<div class="mm-why"><b>Why it\'s wrong:</b> ' + s.why + '</div>' +
+        '</div></div>';
+    }).join('') || '<p style="font-size:12.5px;color:var(--muted);">No individual answers recorded for this one.</p>';
+  }
+  function toggleMisconception(cardId) {
+    var card = document.getElementById(cardId);
+    if (card) card.classList.toggle('expanded');
+  }
+  function resolveMisconception(cardId, cls, i) {
+    var item = (misconceptionsByClass[cls] || [])[i];
+    if (!item) return;
+    item.resolved = true;
+    showToast('Marked addressed — "' + item.text.slice(0, 40) + (item.text.length > 40 ? '…' : '') + '"');
+    renderMisconceptions();
+    renderMiscStats();
+    animatePops(document.getElementById('view-misconceptions'), '.misc-item-card', 20);
+    var clone = document.getElementById('mc-clone');
+    if (clone && clone.dataset.originCard === cardId) {
+      clone.innerHTML = buildExpandedContent(item, cardId, cls, i);
+    }
+  }
+
+  // ---------- Misconception card: grows from its grid position to full screen ----------
+  function fullscreenTargetRect() {
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var marginX = (vw - Math.min(1120, vw * 0.94)) / 2;
+    var marginY = vh * 0.05;
+    return { top: marginY, left: marginX, width: vw - marginX * 2, height: vh - marginY * 2 };
+  }
+  function buildExpandedContent(item, cardId, cls, i) {
+    var sev = severity(item.count);
+    var lessonChips = item.lessons.map(function (l) { return '<span class="chip">' + l.title + '</span>'; }).join('');
+    var fix = item.fix
+      ? '<div class="mm-fix"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--chart-delivery)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>' +
+        '<div><b>Try this</b><p>' + item.fix + '</p></div></div>'
+      : '';
+    var action = item.resolved
+      ? '<span class="mc-resolved-badge" style="margin-top:16px;cursor:default;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Addressed</span>'
+      : '<button class="mc-resolve-btn" onclick="resolveMisconception(\'' + cardId + '\', \'' + cls.replace(/'/g, "\\'") + '\', ' + i + ')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Mark addressed</button>';
+    return '<div class="mc-fs-header">' +
+        '<div class="mc-badge" style="background:' + sev.bg + ';color:' + sev.color + ';"><b>' + item.count + '</b><span>students</span></div>' +
+        '<div style="flex:1;min-width:0;"><div class="mc-fs-title">' + item.text + '</div><div class="misc-chips" style="margin-top:9px;">' + lessonChips + '</div></div>' +
+        '<button class="mc-fs-close" onclick="closeMiscExpanded()" title="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
+      '</div>' +
+      '<div class="mc-fs-body">' + fix + '<div class="mm-list">' + renderStudentList(item.students) + '</div>' + action + '</div>';
+  }
+  function expandMisconception(cardId, cls, i) {
+    var card = document.getElementById(cardId);
+    var item = (misconceptionsByClass[cls] || [])[i];
+    if (!card || !item) return;
+    var rect = card.getBoundingClientRect();
+    card.style.visibility = 'hidden';
+
+    var backdrop = document.createElement('div');
+    backdrop.className = 'mc-backdrop';
+    backdrop.onclick = closeMiscExpanded;
+    document.body.appendChild(backdrop);
+
+    var clone = document.createElement('div');
+    clone.className = 'card mc-fullscreen-card';
+    clone.id = 'mc-clone';
+    clone.dataset.originCard = cardId;
+    clone.style.top = rect.top + 'px';
+    clone.style.left = rect.left + 'px';
+    clone.style.width = rect.width + 'px';
+    clone.style.height = rect.height + 'px';
+    clone.style.borderRadius = '14px';
+    clone.innerHTML = buildExpandedContent(item, cardId, cls, i);
+    document.body.appendChild(clone);
+
+    void clone.offsetWidth;
+    requestAnimationFrame(function () {
+      clone.style.transition = 'top 0.48s cubic-bezier(0.22,1,0.36,1), left 0.48s cubic-bezier(0.22,1,0.36,1), width 0.48s cubic-bezier(0.22,1,0.36,1), height 0.48s cubic-bezier(0.22,1,0.36,1), border-radius 0.4s ease';
+      var target = fullscreenTargetRect();
+      clone.style.top = target.top + 'px';
+      clone.style.left = target.left + 'px';
+      clone.style.width = target.width + 'px';
+      clone.style.height = target.height + 'px';
+      clone.style.borderRadius = '24px';
+      backdrop.classList.add('show');
+    });
+    document.addEventListener('keydown', escCloseMisc);
+  }
+  function escCloseMisc(e) { if (e.key === 'Escape') closeMiscExpanded(); }
+  function closeMiscExpanded() {
+    var clone = document.getElementById('mc-clone');
+    var backdrop = document.querySelector('.mc-backdrop');
+    if (!clone) return;
+    var cardId = clone.dataset.originCard;
+    var card = document.getElementById(cardId);
+    var rect = card ? card.getBoundingClientRect() : fullscreenTargetRect();
+    clone.style.top = rect.top + 'px';
+    clone.style.left = rect.left + 'px';
+    clone.style.width = rect.width + 'px';
+    clone.style.height = rect.height + 'px';
+    clone.style.borderRadius = '14px';
+    if (backdrop) backdrop.classList.remove('show');
+    document.removeEventListener('keydown', escCloseMisc);
+    setTimeout(function () {
+      clone.remove();
+      if (backdrop) backdrop.remove();
+      if (card) card.style.visibility = '';
+    }, 460);
+  }
+  renderMiscStats();
+  renderMiscFilters();
+  renderMisconceptions();
+
+  // ---------- Live demo simulation ----------
+  var liveScript = [
+    { t: 1, text: "Okay, settle down. Books out. Today we're doing adding fractions.", q: false },
+    { t: 4, text: "So fractions, you've all done fractions before, right?", q: true, target: null },
+    { t: 8, text: "Why would it be wrong to just add the tops and the bottoms?", q: true, target: null },
+    { t: 13, text: "Thinking time, no hands yet.", q: false },
+    { t: 17, text: "Turn and talk to your partner — thirty seconds.", q: false },
+    { t: 22, text: "Jamal, what did your partner say?", q: true, target: "cold call" },
+    { t: 26, text: "That's a merit for you, Jamal — excellent reasoning.", q: false },
+    { t: 31, text: "Does anyone know what would happen if we used twelve instead of six?", q: true, target: "hands up" }
+  ];
+  var nudges = [
+    { t: 14, text: 'Great — a reasoning question with real thinking time.' },
+    { t: 33, text: 'Three closed questions in a row. Try "How do you know?"' }
+  ];
+  var liveTimer = null, liveSeconds = 0, shownLines = 0, shownNudges = 0, qCount = 0;
+
+  function fmt(s) {
+    var m = Math.floor(s / 60), r = s % 60;
+    return m + ':' + (r < 10 ? '0' : '') + r;
+  }
+
+  function startLiveDemo() {
+    if (liveTimer) return;
+    liveSeconds = 0; shownLines = 0; shownNudges = 0; qCount = 0;
+    document.getElementById('transcript-feed').innerHTML = '<div style="color:var(--muted);font-size:13px;" id="transcript-empty">Listening… start teaching.</div>';
+    document.getElementById('nudge-banner').classList.remove('show');
+    document.getElementById('q-count').textContent = '0';
+    document.getElementById('g-questions').textContent = '0';
+    document.getElementById('g-open').textContent = '0% open';
+    document.getElementById('g-words').textContent = '0';
+    tick();
+    liveTimer = setInterval(tick, 1000);
+  }
+  function stopLiveDemo() {
+    if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
+  }
+  function tick() {
+    liveSeconds++;
+    document.getElementById('live-timer-desktop').textContent = fmt(liveSeconds);
+    document.getElementById('live-timer-mobile').textContent = fmt(liveSeconds);
+    var sweep = (liveSeconds % 60) / 60;
+    document.getElementById('dial-arc').setAttribute('stroke-dashoffset', 552.9 * (1 - sweep));
+    document.getElementById('g-sinceq').textContent = fmt(liveSeconds % 11);
+    document.getElementById('g-sincecfu').textContent = fmt(liveSeconds % 23);
+
+    while (shownLines < liveScript.length && liveScript[shownLines].t <= liveSeconds) {
+      var line = liveScript[shownLines];
+      var empty = document.getElementById('transcript-empty');
+      if (empty) empty.remove();
+      var feed = document.getElementById('transcript-feed');
+      var row = document.createElement('div');
+      row.className = 't-line';
+      var words = line.text.split(' ').length;
+      document.getElementById('g-words').textContent = (parseInt(document.getElementById('g-words').textContent, 10) + words);
+      var tagHtml = '';
+      if (line.q) {
+        qCount++;
+        document.getElementById('q-count').textContent = qCount;
+        document.getElementById('g-questions').textContent = qCount;
+        document.getElementById('g-open').textContent = Math.round((qCount > 2 ? 0.4 : 0.5) * 100) + '% open';
+        // Targeting (cold call / hands up) is a separate signal from question type — a teacher can
+        // ask a sharp question and still only ever put it to volunteers, which is exactly what
+        // Lemov's cold-call technique and Rosenshine's "check all students" principle address.
+        tagHtml = line.target
+          ? '<span class="t-tag" style="color:' + (line.target === 'cold call' ? 'var(--indigo)' : 'var(--amber)') + '">' + line.target + '</span>'
+          : '<span class="t-tag" style="color:var(--dim)">whole class</span>';
+      }
+      row.innerHTML = '<span class="ts">' + fmt(line.t) + '</span><div>' + line.text + tagHtml + '</div>';
+      feed.appendChild(row);
+      feed.scrollTop = feed.scrollHeight;
+      shownLines++;
+    }
+
+    if (shownNudges < nudges.length && nudges[shownNudges].t <= liveSeconds) {
+      var n = nudges[shownNudges];
+      var banner = document.getElementById('nudge-banner');
+      banner.style.borderColor = 'rgba(202,113,95,0.3)';
+      banner.style.background = 'rgba(202,113,95,0.06)';
+      banner.style.color = 'var(--indigo)';
+      document.getElementById('nudge-text').textContent = n.text;
+      banner.classList.add('show');
+      shownNudges++;
+      setTimeout(function () { banner.classList.remove('show'); }, 6000);
+    }
+
+    if (liveSeconds >= 40) { stopLiveDemo(); document.getElementById('dial-caption').textContent = 'Lesson ended'; }
+  }
+
+  function endLesson() {
+    stopLiveDemo();
+    document.getElementById('dial-caption').textContent = 'Analysing…';
+    document.getElementById('live-status-label').textContent = 'Analysing…';
+    setTimeout(function () { goTo('report'); }, 900);
+  }
+  document.getElementById('dial-toggle').addEventListener('click', endLesson);
+  document.getElementById('live-stop-desktop').addEventListener('click', endLesson);
+
+  // ---------- Lesson setup: objective, class, start ----------
+  function resetLiveToSetup() {
+    stopLiveDemo();
+    document.getElementById('live-setup').style.display = '';
+    document.getElementById('live-active').style.display = 'none';
+    document.getElementById('dial-caption').textContent = 'Tap to end';
+    document.getElementById('live-status-label').textContent = 'Recording';
+  }
+  // ---- Custom dropdown (styled to match the app, not native OS select chrome) ----
+  function setupDropdown(id, onSelect) {
+    var root = document.getElementById(id);
+    var trigger = root.querySelector('.dropdown-trigger');
+    var label = root.querySelector('.dropdown-trigger span');
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      document.querySelectorAll('.dropdown.open').forEach(function (d) { if (d !== root) d.classList.remove('open'); });
+      root.classList.toggle('open');
+    });
+    root.querySelectorAll('.dropdown-option').forEach(function (opt) {
+      opt.addEventListener('click', function () {
+        root.dataset.value = opt.getAttribute('data-value');
+        label.textContent = opt.textContent;
+        label.classList.remove('placeholder');
+        root.querySelectorAll('.dropdown-option').forEach(function (o) { o.classList.remove('selected'); });
+        opt.classList.add('selected');
+        root.classList.remove('open');
+        if (onSelect) onSelect(root.dataset.value);
+      });
+    });
+  }
+  document.addEventListener('click', function () {
+    document.querySelectorAll('.dropdown.open').forEach(function (d) { d.classList.remove('open'); });
+  });
+  setupDropdown('class-dropdown', function () { updateStartEnabled(); });
+
+  function updateStartEnabled() {
+    var ok = document.getElementById('setup-objective').value.trim() &&
+      document.getElementById('class-dropdown').dataset.value &&
+      document.getElementById('setup-consent').checked;
+    document.getElementById('setup-start').disabled = !ok;
+  }
+  document.getElementById('setup-objective').addEventListener('input', updateStartEnabled);
+  document.getElementById('setup-consent').addEventListener('change', updateStartEnabled);
+  document.getElementById('setup-start').addEventListener('click', function () {
+    var cls = document.getElementById('class-dropdown').dataset.value || '';
+    var objective = document.getElementById('setup-objective').value.trim();
+    document.getElementById('live-class-label').textContent = cls;
+    document.getElementById('live-objective-label').textContent = objective;
+    document.getElementById('live-setup').style.display = 'none';
+    document.getElementById('live-active').style.display = 'block';
+    startLiveDemo();
+  });
+
+  // ---------- Exit ticket import (client-side only — nothing leaves the browser) ----------
+  var SAMPLE_CSV = 'student,score,max\nAmara,8,10\nJamal,9,10\nPriya,6,10\nTom,4,10\nSofia,7,10\nBen,3,10\nTheo,5,10\nMax,8,10\nGrace,9,10\nLeo,4,10';
+  function updateExitButton() {
+    document.getElementById('exit-upload-btn').disabled = !document.getElementById('exit-csv').value.trim();
+  }
+  document.getElementById('exit-sample').addEventListener('click', function () {
+    document.getElementById('exit-csv').value = SAMPLE_CSV;
+    updateExitButton();
+  });
+  document.getElementById('exit-choose').addEventListener('click', function () {
+    document.getElementById('exit-file').click();
+  });
+  document.getElementById('exit-file').addEventListener('change', function (e) {
+    var f = e.target.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () { document.getElementById('exit-csv').value = reader.result; updateExitButton(); };
+    reader.readAsText(f);
+  });
+  document.getElementById('exit-csv').addEventListener('input', updateExitButton);
+
+  function parseExitCsv(text) {
+    return text.split(/\r?\n/)
+      .map(function (l) { return l.split(',').map(function (s) { return s.trim(); }); })
+      .filter(function (c) { return c.length >= 2 && c[0] && isFinite(parseFloat(c[1])); })
+      .map(function (c) { return { student: c[0], score: parseFloat(c[1]), max: c[2] && isFinite(parseFloat(c[2])) ? parseFloat(c[2]) : 10 }; });
+  }
+  document.getElementById('exit-upload-btn').addEventListener('click', function () {
+    var rows = parseExitCsv(document.getElementById('exit-csv').value);
+    if (!rows.length) return;
+    document.getElementById('exit-upload').style.display = 'none';
+    document.getElementById('exit-busy').style.display = 'block';
+    setTimeout(function () {
+      var pcts = rows.map(function (r) { return (r.score / r.max) * 100; });
+      var mean = Math.round(pcts.reduce(function (a, b) { return a + b; }, 0) / pcts.length);
+      var mastery = Math.round(pcts.filter(function (p) { return p >= 70; }).length / pcts.length * 100);
+      document.getElementById('exit-results-label').textContent = 'Exit ticket · ' + rows.length + ' students';
+      document.getElementById('exit-mastery').textContent = mastery + '%';
+      document.getElementById('exit-mean').textContent = mean + '%';
+      var bins = [0, 20, 40, 60, 80].map(function (lo) {
+        return pcts.filter(function (p) { return p >= lo && (lo === 80 ? p <= 100 : p < lo + 20); }).length;
+      });
+      var maxBin = Math.max(1, Math.max.apply(null, bins));
+      var BAR_MAX_PX = 40;
+      document.getElementById('exit-bars').innerHTML = bins.map(function (b, i) {
+        var hpx = Math.max(Math.round((b / maxBin) * BAR_MAX_PX), b ? 4 : 2);
+        var color = i * 20 >= 60 ? 'var(--coral)' : 'rgba(24,46,68,0.35)';
+        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">' +
+          '<div style="width:100%;height:' + BAR_MAX_PX + 'px;display:flex;align-items:flex-end;">' +
+            '<div style="width:100%;border-radius:3px 3px 0 0;background:' + color + ';height:' + hpx + 'px;"></div>' +
+          '</div>' +
+          '<span style="font-family:var(--font-mono);font-size:9px;color:var(--dim);">' + (i * 20) + '+</span>' +
+        '</div>';
+      }).join('');
+      var miscRaw = document.getElementById('exit-misc-input').value;
+      var parsedMisc = parseMisconceptionLines(miscRaw);
+      if (parsedMisc.length) {
+        var strugglers = rows.filter(function (r) { return (r.score / r.max) * 100 < 70; }).map(function (r) { return r.student; });
+        mergeMisconceptions('Year 9', parsedMisc, { title: 'Balancing chemical equations', sub: 'Science · 18 Sept' }, strugglers);
+        renderMisconceptions();
+        renderMiscStats();
+        renderMiscFilters();
+      }
+      var list = document.getElementById('exit-misc-list');
+      var empty = document.getElementById('exit-misc-empty');
+      if (parsedMisc.length) {
+        empty.style.display = 'none';
+        list.innerHTML = parsedMisc.map(function (m, i) {
+          var idx = (misconceptionsByClass['Year 9'] || []).findIndex(function (it) { return it.text.toLowerCase() === m.text.toLowerCase(); });
+          var item = idx >= 0 ? misconceptionsByClass['Year 9'][idx] : null;
+          var hasDetail = item && item.students && item.students.length;
+          var cardId = 'exit-mi-' + i;
+          return '<div class="misc-item-card exit-mi-card" id="' + cardId + '">' +
+            '<div class="exit-mi-header" onclick="' + (hasDetail ? "toggleMisconception('" + cardId + "')" : '') + '">' +
+              '<span class="dot"></span><span>' + m.text + (m.count > 1 ? ' · ' + m.count + ' students' : '') + '</span>' +
+              (hasDetail ? '<svg class="misc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>' : '') +
+            '</div>' +
+            (hasDetail ? '<div class="mm-list">' + renderMisconceptionDetail(item) + '</div>' : '') +
+          '</div>';
+        }).join('');
+      } else {
+        list.innerHTML = '';
+        empty.style.display = 'block';
+      }
+      document.getElementById('exit-busy').style.display = 'none';
+      document.getElementById('exit-results').style.display = 'block';
+      updateVerdict(mastery);
+    }, 800);
+  });
+  document.getElementById('exit-misc-see-all').addEventListener('click', function () { goToMisconceptions('Year 9'); });
+  document.getElementById('exit-reset').addEventListener('click', function () {
+    document.getElementById('exit-results').style.display = 'none';
+    document.getElementById('exit-upload').style.display = 'block';
+  });
+  function updateVerdict(mastery) {
+    var delivery = 55, goodD = delivery >= 55, goodM = mastery >= 60, h, d;
+    if (goodD && goodM) { h = 'Delivery and outcomes agree'; d = 'The teaching moves Cadence heard are showing up in what students can do. Keep these moves.'; }
+    else if (!goodD && !goodM) { h = 'Both signals point the same way'; d = 'Delivery scored low and so did outcomes — start with the top next step.'; }
+    else if (goodD) { h = "It sounded good — it didn't land"; d = "The lesson ticked the rubric boxes but most students didn't reach mastery. Were misconceptions surfaced and acted on?"; }
+    else { h = 'Students did better than the audio suggests'; d = 'Outcomes were strong despite a modest delivery score.'; }
+    document.getElementById('verdict-h').textContent = h;
+    document.getElementById('verdict-d').textContent = d;
+  }
+
+  // ---------- Initial paint: the app opens on Overview without going through goTo() ----------
+  moveNavIndicator('overview');
+  requestAnimationFrame(function () {
+    document.getElementById('view-overview').classList.add('in');
+    animateViewEntrance('overview');
+  });
+</script>
+
+</body></html>

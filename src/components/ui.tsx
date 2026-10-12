@@ -50,15 +50,15 @@ export function Stat({
   accent?: string;
 }) {
   return (
-    <div className="glass px-[18px] py-4 min-w-0">
+    <div className="glass metric-card px-[18px] py-4 min-w-0">
       <div className="eyebrow truncate">{label}</div>
       <div
-        className="mt-2 text-[26px] font-semibold tracking-tight tabular-nums"
+        className="metric-value mt-2 text-[26px] font-semibold tracking-tight tabular-nums"
         style={{ color: accent }}
       >
         {typeof value === "number" ? <AnimatedNumber value={value} /> : value}
       </div>
-      {hint && <div className="mt-1 text-xs text-muted">{hint}</div>}
+      {hint && <div className="metric-hint mt-1 text-xs text-muted">{hint}</div>}
     </div>
   );
 }

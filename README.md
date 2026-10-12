@@ -74,7 +74,7 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Anthropic
 
 ## Design
 
-Compact, responsive, monochrome-first UI (white surfaces, near-black chrome, 1px borders instead of shadows) with colour reserved for data — score bands, question types, rubric levels — rather than branding. This deliberately follows [Anaxi](https://github.com/adamscourfield/anaxi)'s design language, since Cadence is intended to become a module inside it. All tokens live in `src/app/globals.css`.
+Warm cream canvas, navy text and active navigation, coral primary actions, and rounded white cards, adapted from the supplied Together design specification. Cadence retains Geist and Geist Mono. The shared theme is `public/design-system.css`, imported by the app and the styled prototype at `/Cadence.html`. See [Cadence design system](docs/design/CADENCE_DESIGN_SYSTEM.md) for adaptations and preview instructions.
 
 
 ## Local prototype preview and progress

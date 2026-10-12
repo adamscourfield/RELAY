@@ -20,7 +20,7 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
   function notify(value: string) {
     if (timer.current) clearTimeout(timer.current);
     setMessage(value);
-    timer.current = setTimeout(() => setMessage(""), 3200);
+    timer.current = setTimeout(() => setMessage(""), 4200);
   }
   return (
     <FeedbackContext.Provider value={notify}>

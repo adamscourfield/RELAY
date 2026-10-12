@@ -58,7 +58,7 @@ export function Logo() {
           <circle cx="46" cy="40" r="5.5" fill="white" />
         </svg>
       </span>
-      <span className="font-semibold tracking-tight text-[16px]">Cadence</span>
+      <span className="cadence-wordmark font-semibold tracking-tight text-[16px]">Cadence</span>
     </Link>
   );
 }
@@ -96,7 +96,7 @@ function ShellContent({ children }: { children: ReactNode }) {
           <span
             className="nav-indicator"
             style={{
-              transform: `translateY(${Math.max(0, activeIndex) * 40}px)`,
+              transform: `translateY(calc(${Math.max(0, activeIndex)} * var(--nav-step)))`,
             }}
           />
           {NAV.map(({ href, label, icon: Icon }) => (
