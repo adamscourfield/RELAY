@@ -737,7 +737,7 @@
 
       <!-- ---- Setup: state objective, pick class, start ---- -->
       <div id="live-setup">
-        <div class="grid setup-grid">
+        <div class="live-setup-layout">
           <div class="card" style="padding:20px;">
             <div class="eyebrow" style="margin-bottom:14px;">Lesson details</div>
             <div style="display:flex;flex-direction:column;gap:10px;">
@@ -757,23 +757,12 @@
                 </div>
               </div>
             </div>
-            <label style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:12.5px;color:var(--muted);cursor:pointer;">
-              <input type="checkbox" id="setup-consent" style="margin-top:2px;">
-              I've told the class this lesson is being recorded, in line with my school's recording policy.
-            </label>
             <button class="btn btn-primary" id="setup-start" style="margin-top:18px;" disabled>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg>
               Start lesson
             </button>
           </div>
-          <div class="card" style="padding:20px;">
-            <div class="eyebrow" style="margin-bottom:10px;">How RELAY listens</div>
-            <div style="font-size:12.5px;color:var(--muted);line-height:1.6;">
-              <p style="margin:0 0 12px;"><b style="color:var(--text);">Transcript, not audio.</b><br>Audio is transcribed live and never stored.</p>
-              <p style="margin:0 0 12px;"><b style="color:var(--text);">Live nudges.</b><br>Discreet prompts when patterns drift — long talk without questions, rushing past wait time.</p>
-              <p style="margin:0;"><b style="color:var(--text);">Praise &amp; sanctions.</b><br>Heard automatically from what you say — you confirm them afterwards, nothing is logged without you.</p>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -2289,12 +2278,10 @@
 
   function updateStartEnabled() {
     var ok = document.getElementById('setup-objective').value.trim() &&
-      document.getElementById('class-dropdown').dataset.value &&
-      document.getElementById('setup-consent').checked;
+      document.getElementById('class-dropdown').dataset.value;
     document.getElementById('setup-start').disabled = !ok;
   }
   document.getElementById('setup-objective').addEventListener('input', updateStartEnabled);
-  document.getElementById('setup-consent').addEventListener('change', updateStartEnabled);
   document.getElementById('setup-start').addEventListener('click', function () {
     var cls = document.getElementById('class-dropdown').dataset.value || '';
     var objective = document.getElementById('setup-objective').value.trim();

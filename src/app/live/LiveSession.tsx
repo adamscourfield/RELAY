@@ -14,7 +14,6 @@ import {
   Clapperboard,
   Mic,
   MicOff,
-  ShieldCheck,
   Square,
   Zap,
 } from "lucide-react";
@@ -100,7 +99,6 @@ export function LiveSession() {
     teacher: "",
     objective: "",
   });
-  const [consent, setConsent] = useState(false);
   const supported = useSyncExternalStore(
     noopSubscribe,
     () => getRecognition() !== null,
@@ -370,7 +368,7 @@ export function LiveSession() {
 
   // ---------- Start / stop ----------
   async function start() {
-    if (!meta.objective.trim() || !meta.yearGroup || !consent) return;
+    if (!meta.objective.trim() || !meta.yearGroup) return;
     setError(null);
     segsRef.current = [];
     savingRef.current = false;
@@ -657,7 +655,7 @@ export function LiveSession() {
             </>
           }
         />
-        <div className="grid grid-cols-1 min-[861px]:grid-cols-[1fr_380px] gap-4 rise">
+        <div className="live-setup-layout rise">
           <div className="glass p-6">
             <div className="eyebrow">Lesson details</div>
             <div className="mt-4 grid sm:grid-cols-2 gap-3">
@@ -739,25 +737,12 @@ export function LiveSession() {
               </div>
             )}
 
-            <label className="mt-8 flex gap-3 items-start text-sm cursor-pointer">
-              <input
-                type="checkbox"
-                className="mt-1 accent-[var(--cyan)]"
-                checked={consent}
-                onChange={(e) => setConsent(e.target.checked)}
-              />
-              <span className="text-muted">
-                I&apos;ve told the class this lesson is being transcribed, in
-                line with my school&apos;s recording and data-protection policy.
-              </span>
-            </label>
             {error && <div className="mt-4 text-sm text-red">{error}</div>}
             <button
               className="btn btn-primary mt-6 w-full sm:w-auto"
               disabled={
                 !meta.objective.trim() ||
                 !meta.yearGroup ||
-                !consent ||
                 (mode === "mic" && !supported)
               }
               onClick={start}
@@ -766,28 +751,7 @@ export function LiveSession() {
             </button>
           </div>
 
-          <div className="glass p-6 flex flex-col gap-4 text-sm">
-            <div className="eyebrow flex items-center gap-2">
-              <ShieldCheck size={12} className="text-lime" /> How RELAY
-              listens
-            </div>
-            <Point title="Transcript, not audio">
-              Live speech recognition provides the coaching transcript. Recorded
-              audio may be sent for diarized transcription on stop; RELAY
-              stores the resulting text, not the audio.
-            </Point>
-            <Point title="Live nudges">
-              Discreet prompts when patterns drift — long talk without
-              questions, no checks for understanding, rushing past wait time.
-            </Point>
-            <Point title="Full report on stop">
-              Every question classified, rubric scores with quoted evidence, and
-              next steps.
-            </Point>
-            <Point title="Close the loop">
-              Upload the exit ticket afterwards to see whether it landed.
-            </Point>
-          </div>
+
         </div>
       </>
     );
@@ -1275,21 +1239,6 @@ function ModeCard({
       <div className="mt-2 font-medium text-sm">{title}</div>
       <div className="mt-1 text-xs text-muted leading-relaxed">{body}</div>
     </button>
-  );
-}
-
-function Point({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <div className="font-medium">{title}</div>
-      <div className="text-muted mt-0.5 leading-relaxed">{children}</div>
-    </div>
   );
 }
 

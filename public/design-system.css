@@ -204,3 +204,5 @@ textarea.field { padding:12px; }
   .rubric-summary-meta span { max-width:none; }
   .rubric-disclosure .rubric-levels { padding:18px; }
 }
+
+.live-setup-layout { width:100%; max-width:760px; }
