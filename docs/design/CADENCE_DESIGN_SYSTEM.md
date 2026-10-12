@@ -33,3 +33,7 @@ ESLint and a production build passed. The shared stylesheet parses, prototype in
 ## Rubric and wordmark refinement
 
 RELAY uses an 18px tracked wordmark and a 32px logo mark. Rubric dimensions use native details/summary controls, collapsed by default and independently expandable with mouse or keyboard. Research-source pills are removed from the rubric view; weight and audio reliability remain as quiet text. The underlying research definitions remain unchanged. Applied to both the app and styled prototype. Lint, TypeScript, stylesheet/script parsing and rendered disclosure markup checks passed.
+
+## Report hierarchy and transcript refinement
+
+The lesson report opens with sage What worked and peach Try next lesson cards directly after the heading. A compact delivery-score badge and Lesson at a glance follow, with seven preserved diagnostic metrics. The large report score ring is removed; overview rings remain. Transcript filters use underlined text buttons with selected-state semantics, plus a separate labelled search field with an icon. Mobile stacks the coaching cards and search, and uses two metric columns. Applied to both previews. Rendered report ordering, prototype filtering/search, CSS/JavaScript syntax, lint, TypeScript and production build are checked; an interactive visual audit remains pending.

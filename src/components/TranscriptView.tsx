@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Search } from "lucide-react";
 import { QTYPE_COLOR } from "@/lib/qtype";
 import { formatClock } from "@/lib/transcript";
 import type { ClassifiedQuestion, TranscriptSegment } from "@/lib/types";
@@ -79,26 +80,37 @@ export function TranscriptView({
 
   return (
     <div className="glass overflow-hidden">
-      <div className="flex flex-col sm:flex-row gap-3 p-3 border-b border-line">
-        <div className="flex gap-1 p-1 rounded-full bg-well border border-line self-start">
+      <div className="transcript-toolbar">
+        <div
+          className="transcript-tabs"
+          role="group"
+          aria-label="Filter transcript"
+        >
           {(["all", "questions", "students"] as Filter[]).map((f) => (
             <button
               key={f}
               aria-pressed={filter === f}
               onClick={() => setFilter(f)}
-              className={`px-3 h-8 rounded-full text-xs capitalize transition-colors ${filter === f ? "bg-panel-strong text-text" : "text-muted hover:text-text"}`}
+              className="transcript-tab"
             >
-              {f}
+              {f === "all"
+                ? "All"
+                : f === "questions"
+                  ? "Questions"
+                  : "Students"}
             </button>
           ))}
         </div>
-        <input
-          aria-label="Search transcript"
-          className="field !h-10 sm:max-w-xs sm:ml-auto"
-          placeholder="Search transcript…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+        <label className="transcript-search">
+          <Search size={16} aria-hidden="true" />
+          <input
+            aria-label="Search transcript"
+            className="field"
+            placeholder="Search transcript…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </label>
       </div>
       <div className="max-h-[560px] overflow-y-auto divide-y divide-line/60">
         {visible.length === 0 && (

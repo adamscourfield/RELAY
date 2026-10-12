@@ -23,7 +23,6 @@ import { LessonTimeline } from "@/components/LessonTimeline";
 import { QTYPE_COLOR, TARGET_LABEL } from "@/lib/qtype";
 import {
   LevelBar,
-  ScoreRing,
   formatDate,
   formatDuration,
   levelColor,
@@ -104,13 +103,54 @@ export default async function LessonReport({
       ) : (
         <>
           <section
-            className="glass p-5 mt-6 flex flex-col md:flex-row gap-6 items-center rise"
+            className="report-takeaways rise"
+            style={{ animationDelay: "40ms" }}
+          >
+            <div className="glass takeaway-card takeaway-positive">
+              <div className="takeaway-title">
+                <TrendingUp size={18} className="text-lime" /> What worked
+              </div>
+              <ul className="mt-3 flex flex-col gap-3 text-sm leading-relaxed">
+                {a.strengths.length ? (
+                  a.strengths.map((s, i) => <li key={i}>{s}</li>)
+                ) : (
+                  <li className="text-muted">
+                    No dimension reached “Secure” yet.
+                  </li>
+                )}
+              </ul>
+            </div>
+            <div className="glass takeaway-card takeaway-next">
+              <div className="takeaway-title">
+                <Target size={18} className="text-cyan" /> Try next lesson
+              </div>
+              <ol className="mt-3 flex flex-col gap-3 text-sm leading-relaxed list-decimal pl-4 marker:text-cyan">
+                {a.nextSteps.map((s, i) => (
+                  <li key={i}>{s}</li>
+                ))}
+              </ol>
+            </div>
+          </section>
+
+          <section
+            className="glass report-overview rise"
             style={{ animationDelay: "60ms" }}
           >
-            <ScoreRing value={a.overall} size={96} label="delivery" />
-            <div className="flex-1 min-w-0 w-full">
-              <p className="text-[13.5px] leading-relaxed">{a.summary}</p>
-              <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4 text-sm">
+            <div className="report-overview-heading">
+              <div className="delivery-badge">
+                <span>Delivery score</span>
+                <strong>
+                  {a.overall}
+                  <small>/100</small>
+                </strong>
+              </div>
+              <div className="report-summary-copy">
+                <h2>Lesson at a glance</h2>
+                <p>{a.summary}</p>
+              </div>
+            </div>
+            <div>
+              <div className="report-metrics">
                 <Metric
                   label="Duration"
                   value={formatDuration(a.metrics.durationSec)}
@@ -229,36 +269,6 @@ export default async function LessonReport({
                   </article>
                 );
               })}
-            </div>
-          </section>
-
-          <section
-            className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 rise"
-            style={{ animationDelay: "160ms" }}
-          >
-            <div className="glass p-5">
-              <div className="eyebrow flex items-center gap-2">
-                <TrendingUp size={12} className="text-lime" /> What worked
-              </div>
-              <ul className="mt-3 flex flex-col gap-3 text-sm leading-relaxed">
-                {a.strengths.length ? (
-                  a.strengths.map((s, i) => <li key={i}>{s}</li>)
-                ) : (
-                  <li className="text-muted">
-                    No dimension reached “Secure” yet.
-                  </li>
-                )}
-              </ul>
-            </div>
-            <div className="glass p-5 relative overflow-hidden">
-              <div className="eyebrow flex items-center gap-2">
-                <Target size={12} className="text-cyan" /> Try next lesson
-              </div>
-              <ol className="mt-3 flex flex-col gap-3 text-sm leading-relaxed list-decimal pl-4 marker:text-cyan">
-                {a.nextSteps.map((s, i) => (
-                  <li key={i}>{s}</li>
-                ))}
-              </ol>
             </div>
           </section>
 
