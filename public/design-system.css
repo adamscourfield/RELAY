@@ -103,7 +103,7 @@ textarea.field { padding:12px; }
 .mc-dialog::backdrop,.mc-backdrop { background:#182e4466; backdrop-filter:blur(4px); }
 .mc-fullscreen-card,.mc-fs-header { background:var(--cream); box-shadow:none; }
 .mc-fs-header { padding:24px 32px; }
-.mc-fs-body { padding:28px 32px; }
+.mc-fs-body { padding:28px 32px; width:100%; max-width:none; }
 .mc-fs-close { width:44px; height:44px; }
 .toast { background:var(--navy); font-size:12px; border-radius:12px; box-shadow:0 7px 18px #182e4412; white-space:normal; }
 .toast-wrap { max-width:calc(100vw - 32px); }
