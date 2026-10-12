@@ -6,7 +6,7 @@ import { outcomeDrivers, pearson } from "@/lib/triangulate";
 import { EmptyState, PageHeader, Stat, scoreColor } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Insights · Cadence" };
+export const metadata = { title: "Insights · RELAY" };
 
 export default async function InsightsPage() {
   const lessons = await listLessonsFull();

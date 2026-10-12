@@ -58,7 +58,7 @@ export function Logo() {
           <circle cx="46" cy="40" r="5.5" fill="white" />
         </svg>
       </span>
-      <span className="cadence-wordmark font-semibold tracking-tight text-[16px]">Cadence</span>
+      <span className="cadence-wordmark font-semibold tracking-tight text-[16px]">RELAY</span>
     </Link>
   );
 }

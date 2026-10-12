@@ -1,4 +1,4 @@
-// Stand-in for a real school roster. Cadence is expected to become a module inside
+// Stand-in for a real school roster. RELAY is expected to become a module inside
 // Anaxi, which owns the actual student/staff roster — this gives behaviour detection
 // something to resolve names against until that integration exists. Swap `getRoster`
 // for a real lookup (Anaxi API, shared student-ID scheme) and nothing else needs to change.

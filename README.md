@@ -1,8 +1,8 @@
-# Cadence
+# RELAY
 
 Real-time, evidence-based feedback on what teachers say, checked against what students can then do.
 
-Cadence transcribes a lesson, scores it against a research-based rubric, classifies every question, measures wait time, pace and checks for understanding, and gives quoted evidence plus concrete next steps. Upload the exit ticket afterwards and Cadence **triangulates**: did the delivery actually land? Across many lessons, the Insights view shows which behaviours and phrases go with higher student mastery.
+RELAY transcribes a lesson, scores it against a research-based rubric, classifies every question, measures wait time, pace and checks for understanding, and gives quoted evidence plus concrete next steps. Upload the exit ticket afterwards and RELAY **triangulates**: did the delivery actually land? Across many lessons, the Insights view shows which behaviours and phrases go with higher student mastery.
 
 ## Features
 
@@ -30,11 +30,11 @@ Every lesson (live, imported or demo) is scanned for merit/sanction language —
 
 Nothing counts until a teacher explicitly approves on the lesson report or the global Behaviour queue (`BehaviourPanel`) — detection from speech is inherently fallible (misheard names, wrong-speaker attribution), so this is a human-in-the-loop review queue, not an automatic ledger. Confirmed events aggregate into a same-day per-student tally at `/behaviour`.
 
-`src/lib/roster.ts` is a **placeholder**: it fabricates a deterministic class list from a fixed name pool since Cadence has no student data of its own. It exists to give the matching logic something real to resolve against, and is designed to be swapped for an actual roster (the intent is for Cadence to become a module inside Anaxi, which owns the real student/staff roster) without changing anything else — `getRoster`/`resolveStudent` are the only two functions that would need to change.
+`src/lib/roster.ts` is a **placeholder**: it fabricates a deterministic class list from a fixed name pool since RELAY has no student data of its own. It exists to give the matching logic something real to resolve against, and is designed to be swapped for an actual roster (the intent is for RELAY to become a module inside Anaxi, which owns the real student/staff roster) without changing anything else — `getRoster`/`resolveStudent` are the only two functions that would need to change.
 
 ## Transcription
 
-Audio (from the live recorder or an uploaded file) is transcribed via [AssemblyAI](https://www.assemblyai.com/) with speaker diarization, which is what actually separates teacher from student talk — something a plain-text transcript can only do if it's already labelled `T:`/`S:`. Set `ASSEMBLYAI_API_KEY` to enable it. Audio is sent for transcription and then discarded; Cadence never stores it. Without a key, live mode falls back to the browser's own (unlabelled, non-diarizing) speech recognition, and audio-file import is disabled.
+Audio (from the live recorder or an uploaded file) is transcribed via [AssemblyAI](https://www.assemblyai.com/) with speaker diarization, which is what actually separates teacher from student talk — something a plain-text transcript can only do if it's already labelled `T:`/`S:`. Set `ASSEMBLYAI_API_KEY` to enable it. Audio is sent for transcription and then discarded; RELAY never stores it. Without a key, live mode falls back to the browser's own (unlabelled, non-diarizing) speech recognition, and audio-file import is disabled.
 
 ## Analysis engines
 
@@ -74,7 +74,7 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Anthropic
 
 ## Design
 
-Warm cream canvas, navy text and active navigation, coral primary actions, and rounded white cards, adapted from the supplied Together design specification. Cadence retains Geist and Geist Mono. The shared theme is `public/design-system.css`, imported by the app and the styled prototype at `/Cadence.html`. See [Cadence design system](docs/design/CADENCE_DESIGN_SYSTEM.md) for adaptations and preview instructions.
+Warm cream canvas, navy text and active navigation, coral primary actions, and rounded white cards, adapted from the supplied Together design specification. RELAY retains Geist and Geist Mono. The shared theme is `public/design-system.css`, imported by the app and the styled prototype at `/Cadence.html`. See [RELAY design system](docs/design/CADENCE_DESIGN_SYSTEM.md) for adaptations and preview instructions.
 
 
 ## Local prototype preview and progress

@@ -311,7 +311,7 @@ export function AssessmentPanel({
         </h3>
         <p className="text-[13px] text-muted mt-2 leading-relaxed">
           {verdict?.detail ??
-            "Once results come in, Cadence checks whether what the delivery score found is showing up in what students can do."}
+            "Once results come in, RELAY checks whether what the delivery score found is showing up in what students can do."}
         </p>
         <Link href={classHref} className="block text-xs text-cyan mt-4">
           See misconceptions for {yearGroup || "this class"} →

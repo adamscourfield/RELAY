@@ -768,12 +768,12 @@ export function LiveSession() {
 
           <div className="glass p-6 flex flex-col gap-4 text-sm">
             <div className="eyebrow flex items-center gap-2">
-              <ShieldCheck size={12} className="text-lime" /> How Cadence
+              <ShieldCheck size={12} className="text-lime" /> How RELAY
               listens
             </div>
             <Point title="Transcript, not audio">
               Live speech recognition provides the coaching transcript. Recorded
-              audio may be sent for diarized transcription on stop; Cadence
+              audio may be sent for diarized transcription on stop; RELAY
               stores the resulting text, not the audio.
             </Point>
             <Point title="Live nudges">

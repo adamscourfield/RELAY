@@ -4,7 +4,7 @@ import { groupMisconceptions } from "@/lib/misconceptions";
 import { MisconceptionsWorkspace } from "@/components/MisconceptionsWorkspace";
 import { PageHeader } from "@/components/ui";
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Misconceptions · Cadence" };
+export const metadata = { title: "Misconceptions · RELAY" };
 export default async function MisconceptionsPage() {
   const groups = groupMisconceptions(
     await listLessons(),

@@ -265,7 +265,7 @@ export function ImportForm() {
               Transcribed with speaker diarization, so teacher and student talk
               are separated automatically — something a plain text transcript
               usually can&apos;t give you. The audio itself is sent for
-              transcription and then discarded; it isn&apos;t stored by Cadence.
+              transcription and then discarded; it isn&apos;t stored by RELAY.
             </p>
           </div>
         )}

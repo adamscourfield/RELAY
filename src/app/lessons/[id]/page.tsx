@@ -83,7 +83,7 @@ export default async function LessonReport({
                   className="chip"
                   title={
                     a.engine === "claude"
-                      ? "Analysed by Claude against the Cadence rubric"
+                      ? "Analysed by Claude against the RELAY rubric"
                       : "Pattern-based analysis (no AI key configured)"
                   }
                 >
@@ -357,7 +357,7 @@ export default async function LessonReport({
           <ShieldCheck size={18} className="text-lime" /> Behaviour
         </h2>
         <p className="text-sm text-muted mb-4">
-          Merits and sanctions Cadence heard in the transcript, awaiting your
+          Merits and sanctions RELAY heard in the transcript, awaiting your
           confirmation.
         </p>
         <BehaviourPanel

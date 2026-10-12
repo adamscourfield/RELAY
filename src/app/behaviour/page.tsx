@@ -4,7 +4,7 @@ import { getRoster } from "@/lib/roster";
 import { BehaviourPanel } from "@/components/BehaviourPanel";
 import { EmptyState, PageHeader, Stat } from "@/components/ui";
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Behaviour · Cadence" };
+export const metadata = { title: "Behaviour · RELAY" };
 export default async function BehaviourPage() {
   const lessons = await listLessons(),
     tally = dailyTally(lessons, schoolDay());
