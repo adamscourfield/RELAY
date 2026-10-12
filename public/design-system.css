@@ -248,3 +248,6 @@ textarea.field { padding:12px; }
   .transcript-search { width:100%; }
   .transcript-search .field { font-size:16px; }
 }
+
+.import-tabs { width:100%; border-bottom:1px solid var(--line); gap:28px; }
+.import-tabs .transcript-tab,.import-tabs .pill-tab { min-height:48px; font-size:14px; }

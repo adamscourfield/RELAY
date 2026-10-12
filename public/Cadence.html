@@ -1297,9 +1297,9 @@
             <input class="field" placeholder="Year group / class">
             <input class="field" style="grid-column:1/-1;" placeholder="Teacher">
           </div>
-          <div class="pill-tabs" style="margin-top:18px;width:fit-content;">
-            <button class="pill-tab active">Transcript</button>
-            <button class="pill-tab">Audio recording</button>
+          <div class="import-tabs transcript-tabs" role="group" aria-label="Import format" style="margin-top:18px;">
+            <button class="pill-tab active" aria-pressed="true">Transcript</button>
+            <button class="pill-tab" aria-pressed="false">Audio recording</button>
           </div>
           <textarea class="field" style="margin-top:12px;font-family:var(--font-mono);font-size:11.5px;" rows="10" placeholder="Paste a transcript, or choose a .vtt / .srt / .txt file from your recording device…"></textarea>
           <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px;">

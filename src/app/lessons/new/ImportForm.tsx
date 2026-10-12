@@ -155,16 +155,18 @@ export function ImportForm() {
           />
         </div>
 
-        <div className="mt-5 flex gap-1 p-1 rounded-full bg-well border border-line self-start w-fit">
+        <div className="import-tabs transcript-tabs mt-5" role="group" aria-label="Import format">
           <button
             onClick={() => setTab("text")}
-            className={`px-4 h-9 rounded-full text-sm transition-colors ${tab === "text" ? "bg-panel-strong text-text shadow-sm" : "text-muted hover:text-text"}`}
+            className="transcript-tab"
+            aria-pressed={tab === "text"}
           >
             Transcript
           </button>
           <button
             onClick={() => setTab("audio")}
-            className={`px-4 h-9 rounded-full text-sm transition-colors ${tab === "audio" ? "bg-panel-strong text-text shadow-sm" : "text-muted hover:text-text"}`}
+            className="transcript-tab"
+            aria-pressed={tab === "audio"}
           >
             Audio recording
           </button>
