@@ -1618,10 +1618,11 @@
     empty.style.display = 'none';
     list.innerHTML = pendingItems.map(function (item) {
       var m = TYPE_META[item.type];
-      return '<div class="card bh-card anim-fade" style="border-left-color:' + m.color + ';" data-pending-id="' + item.id + '">' +
+      return '<div class="card bh-card anim-fade" data-pending-id="' + item.id + '">' +
         '<div class="bh-card-top">' +
-          '<span class="bh-avatar" style="background:' + m.bg + ';color:' + m.color + ';">' + initials(item.student) + '</span>' +
-          '<div><div class="bh-card-name">' + item.student + '</div><div class="bh-card-sub">' + m.label + ' · ' + item.time + '</div></div>' +
+          '<span class="bh-avatar">' + initials(item.student) + '</span>' +
+          '<div><div class="bh-card-name">' + item.student + '</div><div class="bh-card-sub">' + item.time + '</div></div>' +
+          '<span class="review-event-label" style="color:' + m.color + ';">' + m.label + '</span>' +
         '</div>' +
         '<p class="bh-quote">“' + item.quote + '”</p>' +
         '<div class="bh-lesson">' + item.lesson + '</div>' +

@@ -101,10 +101,11 @@ export function BehaviourPanel({
               <div>
                 <b className="text-[14px]">{name}</b>
                 <p className="text-xs text-muted">
-                  {m.label} · {formatClock(e.at)}
+                  {formatClock(e.at)}
                   {e.status !== "pending" && ` · ${e.status}`}
                 </p>
               </div>
+              <span className="review-event-label">{m.label}</span>
             </div>
             <p className="mt-3 text-[13px] text-muted leading-relaxed">
               “{e.quote}”
@@ -136,8 +137,7 @@ export function BehaviourPanel({
               {e.status === "pending" ? (
                 <>
                   <button
-                    className="btn btn-ghost"
-                    style={{ color: "var(--green)" }}
+                    className="btn btn-ghost review-approve"
                     disabled={
                       busy === e.id || !(choices[e.id] || e.studentMatch)
                     }
