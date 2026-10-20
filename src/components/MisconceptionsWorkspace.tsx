@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { X, ChevronRight } from "lucide-react";
-import type { MisconceptionGroup } from "@/lib/misconceptions";
+import { groupInstances, type MisconceptionGroup } from "@/lib/misconceptions";
 import { MisconceptionDetail } from "./MisconceptionDetail";
 import { Stat, EmptyState } from "./ui";
 export function MisconceptionsWorkspace({
@@ -39,7 +39,7 @@ export function MisconceptionsWorkspace({
       name: c,
       count: active
         .filter((g) => g.yearGroup === c)
-        .reduce((n, g) => n + g.reportedCount, 0),
+        .reduce((n, g) => n + groupInstances(g), 0),
     }))
     .sort((a, b) => b.count - a.count)[0];
   return (
@@ -52,8 +52,8 @@ export function MisconceptionsWorkspace({
         />
         <Stat
           label="Reported instances"
-          value={groups.reduce((n, g) => n + g.reportedCount, 0)}
-          hint="known counts across lessons"
+          value={groups.reduce((n, g) => n + groupInstances(g), 0)}
+          hint="teacher-reported plus heard in lessons"
           accent="var(--heading-accent)"
         />
         <Stat
@@ -92,8 +92,10 @@ export function MisconceptionsWorkspace({
         ))}
       </div>
       {!groups.length && (
-        <EmptyState title="No misconceptions noted yet">
-          Add notes when you upload an exit ticket.
+        <EmptyState title="No misconceptions on file yet">
+          They appear when a recorded lesson with a student reply that shows a
+          wrong idea is analysed by Claude, or when you add notes while
+          uploading an exit ticket.
         </EmptyState>
       )}
       {classes
@@ -110,9 +112,9 @@ export function MisconceptionsWorkspace({
                     className={`glass mc-card ${g.addressed ? "mc-addressed" : ""}`}
                   >
                     <span
-                      className={`mc-count ${g.reportedCount >= 7 ? "high" : g.reportedCount >= 4 ? "medium" : "low"}`}
+                      className={`mc-count ${groupInstances(g) >= 7 ? "high" : groupInstances(g) >= 4 ? "medium" : "low"}`}
                     >
-                      <b>{g.reportedCount || "—"}</b>
+                      <b>{groupInstances(g) || "—"}</b>
                       <small>instances</small>
                     </span>
                     <div className="min-w-0 flex-1">
@@ -155,8 +157,9 @@ export function MisconceptionsWorkspace({
           </section>
         ))}
       <p className="text-xs text-dim">
-        Counts are reported instances, not unique students. Matching uses exact
-        wording within each class.
+        Counts are instances (teacher-reported counts plus replies heard in
+        recordings), not unique students. Matching uses exact wording within
+        each class.
       </p>
       <dialog
         ref={dialog}
@@ -172,8 +175,10 @@ export function MisconceptionsWorkspace({
             <header className="flex items-start gap-4 mb-5">
               <div className="flex-1">
                 <div className="eyebrow">
-                  {group.yearGroup} · {group.reportedCount || "Unknown"}{" "}
-                  reported instances
+                  {group.yearGroup} ·{" "}
+                  {groupInstances(group) || "Unknown number of"} instances
+                  {group.heardCount > 0 &&
+                    ` (${group.reportedCount} teacher-reported, ${group.heardCount} heard in lessons)`}
                 </div>
                 <h2
                   id="misconception-dialog-title"

@@ -44,25 +44,38 @@ export function MisconceptionDetail({ group }: { group: MisconceptionGroup }) {
         </div>
       </div>
       {group.evidence.length ? (
-        group.evidence.map((e, i) => (
-          <div key={`${e.lessonId}-${e.student}-${i}`} className="mc-student">
-            <span className="review-avatar">{e.student[0]}</span>
-            <div className="min-w-0">
-              <b>{e.student}</b>
-              <p className="mt-1 text-[13px]">“{e.answer}”</p>
-              <p className="mt-1 text-xs text-muted">
-                <b>Why it’s wrong: </b>
-                {e.explanation}
-              </p>
-              <Link
-                className="text-[11px] text-dim"
-                href={`/lessons/${e.lessonId}#outcomes`}
-              >
-                {e.lessonTitle}
-              </Link>
+        group.evidence.map((e, i) => {
+          const heard = e.provenance === "transcript";
+          return (
+            <div key={`${e.lessonId}-${e.student}-${i}`} className="mc-student">
+              <span className="review-avatar">{heard ? "?" : e.student[0]}</span>
+              <div className="min-w-0">
+                <b>{heard ? "Heard in the lesson" : e.student}</b>
+                {heard && e.question && (
+                  <p className="mt-1 text-xs text-muted">Asked: {e.question}</p>
+                )}
+                <p className="mt-1 text-[13px]">“{e.answer}”</p>
+                {e.explanation && (
+                  <p className="mt-1 text-xs text-muted">
+                    <b>Why it’s wrong: </b>
+                    {e.explanation}
+                  </p>
+                )}
+                <Link
+                  className="text-[11px] text-dim"
+                  href={
+                    heard && e.segmentId
+                      ? `/lessons/${e.lessonId}#seg-${e.segmentId}`
+                      : `/lessons/${e.lessonId}#outcomes`
+                  }
+                >
+                  {e.lessonTitle}
+                  {heard && " · jump to the reply"}
+                </Link>
+              </div>
             </div>
-          </div>
-        ))
+          );
+        })
       ) : (
         <p className="text-sm text-muted py-4">
           No individual answers recorded for this one.

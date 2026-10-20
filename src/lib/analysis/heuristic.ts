@@ -1,5 +1,6 @@
 // Deterministic, transparent rubric engine. Runs with no API key and provides the
 // measured metrics (timings, counts) that the Claude engine builds on.
+import { pairExchanges } from "../exchanges";
 import { compositeScore, RUBRIC, RUBRIC_BY_ID } from "../rubric";
 import type {
   ClassifiedQuestion,
@@ -231,6 +232,11 @@ export function heuristicAnalysis(segments: TranscriptSegment[], roster?: string
     .slice(0, 3)
     .map((d) => NEXT_STEP[d.id]);
 
+  const pairing = pairExchanges(segments);
+  const exchangeNote =
+    pairing.note ??
+    "Replies are paired with the questions that prompted them, but this pattern engine cannot judge whether an answer was right. Configure ANTHROPIC_API_KEY to assess replies and surface misconceptions.";
+
   const overall = compositeScore(dims);
   const weakest = RUBRIC_BY_ID[ranked[ranked.length - 1].id].name.toLowerCase();
 
@@ -240,6 +246,8 @@ export function heuristicAnalysis(segments: TranscriptSegment[], roster?: string
     overall,
     dimensions: RUBRIC.map((r) => dims.find((d) => d.id === r.id)!),
     questions,
+    exchanges: pairing.exchanges.map((e) => ({ ...e, verdict: "unjudged" as const })),
+    exchangeNote,
     metrics: m,
     strengths,
     nextSteps,
