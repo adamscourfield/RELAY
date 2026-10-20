@@ -16,6 +16,7 @@ import { formatClock } from "@/lib/transcript";
 import type { QuestionType } from "@/lib/types";
 import { AssessmentPanel } from "@/components/AssessmentPanel";
 import { BehaviourPanel } from "@/components/BehaviourPanel";
+import { ExchangesSection } from "@/components/ExchangesSection";
 import { ReportActions } from "@/components/ReportActions";
 import { TranscriptView } from "@/components/TranscriptView";
 import { LessonTimeline } from "@/components/LessonTimeline";
@@ -342,6 +343,12 @@ export default async function LessonReport({
               })}
             </div>
           </section>
+
+          <ExchangesSection
+            exchanges={a.exchanges}
+            note={a.exchangeNote}
+            segments={lesson.segments}
+          />
         </>
       )}
 

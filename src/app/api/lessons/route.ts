@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import { z } from "zod";
 import { analyseLesson } from "@/lib/analysis";
 import { detectBehaviourEvents } from "@/lib/behaviour";
+import { knownMisconceptionLabels } from "@/lib/known-misconceptions";
 import { listLessons, saveLesson } from "@/lib/store";
 import { parseTranscript } from "@/lib/transcript";
 import type { Lesson } from "@/lib/types";
@@ -54,7 +55,9 @@ export async function POST(req: Request) {
     assessment: null,
     behaviourEvents: detectBehaviourEvents(usable, b.yearGroup),
   };
-  lesson.analysis = await analyseLesson(lesson);
+  lesson.analysis = await analyseLesson(lesson, {
+    knownMisconceptions: await knownMisconceptionLabels(lesson.yearGroup, lesson.subject),
+  });
   await saveLesson(lesson);
   return Response.json({ id: lesson.id }, { status: 201 });
 }

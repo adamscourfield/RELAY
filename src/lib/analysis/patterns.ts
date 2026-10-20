@@ -47,7 +47,7 @@ const NOT_A_NAME = new Set([
   "When", "Where", "Which", "Can", "Could", "Would", "Do", "Does", "Is", "Are", "The", "This",
   "That", "Everyone", "Yes", "No", "Thank", "Thanks", "Miss", "Sir", "Mr", "Mrs", "Ms", "Good",
 ]);
-const looksLikeName = (word: string) => /^[A-Z][a-z]+$/.test(word) && !NOT_A_NAME.has(word);
+export const looksLikeName = (word: string) => /^[A-Z][a-z]+$/.test(word) && !NOT_A_NAME.has(word);
 
 /**
  * `roster`, when available, is the deciding factor: ordinary capitalised words ("Anyone?", "Six?",

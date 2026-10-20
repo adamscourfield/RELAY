@@ -65,6 +65,30 @@ export interface LessonMetrics {
   specificPraise: number;
 }
 
+export type ReplyVerdict = "correct" | "partial" | "incorrect" | "unclear";
+
+/**
+ * One teacher question and the student speech that directly followed it. Pairing is deterministic
+ * (speaker labels + turn order); the verdict is a judgement made afterwards by the Claude engine.
+ * Students are not identified — diarization separates teacher from student, not one pupil from
+ * another — so nothing here attributes a reply to a named child.
+ */
+export interface StudentExchange {
+  id: string;
+  /** Segment containing the question text itself. */
+  questionSegmentId: string;
+  question: string;
+  /** Set when the teacher then named a student with a bare nomination ("Amara?"). */
+  nomination?: string;
+  responseSegmentIds: string[];
+  response: string;
+  /** "unjudged": paired, but this engine cannot assess correctness. */
+  verdict: ReplyVerdict | "unjudged";
+  rationale?: string;
+  /** A specific wrong idea the reply reveals. `quote` is verified to appear in `response`. */
+  misconception?: { label: string; quote: string; segmentId: string };
+}
+
 export interface LessonAnalysis {
   engine: "claude" | "heuristic";
   analysedAt: string;
@@ -72,6 +96,10 @@ export interface LessonAnalysis {
   overall: number;
   dimensions: DimensionScore[];
   questions: ClassifiedQuestion[];
+  /** Teacher question → student reply pairs. Absent on lessons analysed before this existed. */
+  exchanges?: StudentExchange[];
+  /** Why exchanges is empty or incomplete (e.g. no student speech was labelled). */
+  exchangeNote?: string;
   metrics: LessonMetrics;
   strengths: string[];
   nextSteps: string[];
@@ -88,7 +116,11 @@ export interface MisconceptionEvidence {
   student: string;
   answer: string;
   explanation: string;
-  provenance: "teacher" | "demo";
+  /** "transcript": a reply heard in the lesson recording and judged by the analysis engine. */
+  provenance: "teacher" | "demo" | "transcript";
+  /** Transcript evidence only: where the reply sits in the lesson, and what was asked. */
+  segmentId?: string;
+  question?: string;
 }
 export interface MisconceptionFollowUp { groupId:string; addressedAt:string|null; addressedObservations:string[]; }
 export interface Misconception {

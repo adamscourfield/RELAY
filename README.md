@@ -11,6 +11,7 @@ RELAY transcribes a lesson, scores it against a research-based rubric, classifie
 | **Live** (`/live`) | Browser mic → live transcript, question classification, wait-time/pace/check-for-understanding gauges and discreet coaching nudges. On stop, the recorded audio is (when configured) re-transcribed with speaker diarization for an accurate, teacher/student-labelled final transcript. Demo mode plays a scripted lesson with no mic. |
 | **Import** (`/lessons/new`) | Paste/upload a transcript (WebVTT, SRT, `[00:01:02] T: …` lines, plain text) from an external recorder, or upload the audio file itself for diarized transcription. |
 | **Lesson report** | Composite score, 7-dimension rubric with quoted evidence, timeline, question log with wait times, strengths, next steps, searchable transcript. |
+| **What students said** | Each teacher question is paired with the student speech that followed it. With a Claude key, every reply is judged (correct / partly right / incorrect / unclear) and any specific wrong idea it reveals is tagged with a quote from the recording. See [Student replies](#student-replies). |
 | **Triangulation** | Upload exit-ticket / worksheet / assessment CSV (`student, score[, max]`) → mastery, distribution, and a delivery-vs-outcome verdict. |
 | **Insights** (`/insights`) | Delivery vs mastery scatter, correlation of each behaviour with mastery, and teacher phrases distinctive to high- vs low-mastery lessons. |
 | **Behaviour** (`/behaviour`) | Merits/demerits/detentions/room removals are detected from the transcript itself — a teacher never clicks a button for these. Every detection is "pending" until confirmed on the lesson report (ambiguous or unheard names prompt a pick-the-student step first), so nothing reaches a student's tally unchecked. See [Behaviour detection](#behaviour-detection) below. |
@@ -31,6 +32,21 @@ Every lesson (live, imported or demo) is scanned for merit/sanction language —
 Nothing counts until a teacher explicitly approves on the lesson report or the global Behaviour queue (`BehaviourPanel`) — detection from speech is inherently fallible (misheard names, wrong-speaker attribution), so this is a human-in-the-loop review queue, not an automatic ledger. Confirmed events aggregate into a same-day per-student tally at `/behaviour`.
 
 `src/lib/roster.ts` is a **placeholder**: it fabricates a deterministic class list from a fixed name pool since RELAY has no student data of its own. It exists to give the matching logic something real to resolve against, and is designed to be swapped for an actual roster (the intent is for RELAY to become a module inside Anaxi, which owns the real student/staff roster) without changing anything else — `getRoster`/`resolveStudent` are the only two functions that would need to change.
+
+## Student replies
+
+`src/lib/exchanges.ts` pairs each teacher question with the student segment(s) that directly follow it, using only speaker labels and turn order. A bare nomination ("Amara?") is attached to the question it refers to, and procedural checks ("Everyone ready?") are not treated as exchanges. Pairing needs labelled speakers: an unlabelled transcript yields no exchanges and the report says why.
+
+Judging happens in the Claude engine (`src/lib/analysis/claude.ts`). For each pair Claude returns a verdict and, only when a reply reveals a specific wrong idea, a misconception label and a verbatim quote. Guards:
+
+- A quote that cannot be found in the student's actual words is discarded, so the app never shows an invented student quote. The verdict stays; the tag is dropped and the rationale says so.
+- A misconception tag on a "correct" verdict is discarded as inconsistent.
+- Anything Claude skips stays "not judged" rather than being guessed. The pattern engine pairs replies but never judges them.
+- Students are not identified. Diarization separates teacher from student, not one pupil from another, so evidence is shown as "Heard in the lesson", never attributed to a named child.
+
+Judged misconceptions join the typed exit-ticket notes in `/misconceptions`; they are added to, not replacing, teacher notes. Grouping is still by exact wording within a class, so before each analysis Claude is shown the labels already on file for the same class and subject (real lessons only, never demo data) and asked to reuse one verbatim when the same idea appears. Counts are instances (teacher-reported counts plus replies heard), not unique students. Re-analysing a lesson replaces its heard replies; if the wording or quote changes, a group marked Addressed reopens.
+
+Lessons analysed before this existed show a prompt to use **Re-analyse**.
 
 ## Transcription
 
@@ -62,6 +78,7 @@ These are stated plainly on purpose:
 - **Audio isn't the whole lesson.** Circulation, board work, body language and silent practice are invisible. Dimensions that audio captures only partially are labelled in the report.
 - **Speaker separation** only happens with AssemblyAI configured (live recordings and audio-file import) or a manually labelled `T:`/`S:` text transcript. Without a key, live mode falls back to the browser's own speech recognition, which can't tell speakers apart.
 - **Browser speech-to-text** (the live-coaching fallback) drops punctuation and struggles with noisy rooms; question detection falls back to interrogative openers. It also isn't private in the way it sounds — Chrome's built-in engine sends audio to Google's servers to produce it. The diarized AssemblyAI path used for the saved transcript doesn't have this problem, but you should still review whatever data processing terms your STT vendor offers before recording real students.
+- **Reply judging is only as good as the recording.** A microphone near the teacher can miss quiet or distant students, overlapping answers merge, and a wrong speaker label breaks the question→reply pairing. Claude is told to answer "unclear" rather than guess, but a judged reply is a prompt for the teacher to check, not a verified assessment. The feature has been exercised against synthetic transcripts and a stubbed API only; it has not yet been run on real classroom audio or the live Anthropic API.
 - **Diarization guesses teacher vs. student by talk time** (whoever talks most is labelled "teacher"), which is a good default in a whole-class lesson but can mislabel a lesson that's mostly independent/group work.
 - **Behaviour detection is pattern-based, not verified identity.** It only recognises phrasing it's been taught, will miss anything phrased differently, and resolves names against a placeholder roster (see above) — the confirm step exists precisely because misheard names and wrong-speaker attribution are expected, not edge cases.
 - **Correlation ≠ causation.** Insights come with sample-size warnings. Class, topic and assessment difficulty are confounders.
@@ -94,6 +111,14 @@ Run `npm run lint`, `npx tsc --noEmit`, and `npm run build`. Focused domain chec
 ```bash
 npx tsc --module commonjs --moduleResolution node --target es2022 --esModuleInterop --skipLibCheck --outDir /tmp/cadence-domain src/lib/misconceptions.ts src/lib/triangulate.ts src/lib/behaviour.ts src/lib/transcript.ts src/lib/analysis/heuristic.ts
 node scripts/parity-domain-checks.mjs
+```
+
+Student-reply pairing, quote verification, aggregation and reopen behaviour have their own check (no API calls):
+
+```bash
+OUT=/tmp/relay-domain
+npx tsc --module commonjs --moduleResolution node --target es2022 --esModuleInterop --skipLibCheck --outDir $OUT src/lib/exchanges.ts src/lib/misconceptions.ts src/lib/analysis/heuristic.ts
+RELAY_CHECK_DIR=$OUT node scripts/exchange-checks.mjs
 ```
 
 API checks create and remove their own synthetic fixture. Run them against a separate local validation database, never the preview database:
