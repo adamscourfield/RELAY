@@ -63,6 +63,15 @@ export function ExchangesSection({
             {exchanges.map((e) => {
               const v = e.verdict === "unjudged" ? null : VERDICT[e.verdict];
               const firstReply = e.responseSegmentIds[0];
+              const chip = v ? (
+                <span className="chip" style={{ color: v.color, borderColor: "currentColor" }}>
+                  {v.label}
+                </span>
+              ) : (
+                <span className="chip" title="Pattern engine cannot judge answers">
+                  not judged
+                </span>
+              );
               return (
                 <article key={e.id} className="px-4 py-3 grid grid-cols-[44px_1fr] sm:grid-cols-[52px_1fr_110px] gap-x-3 gap-y-1">
                   <span className="font-mono text-[11px] text-dim pt-0.5">{clock(firstReply)}</span>
@@ -75,6 +84,8 @@ export function ExchangesSection({
                     <a href={`#seg-${firstReply}`} className="block mt-1 italic text-text">
                       <span className="eyebrow !text-[10px] mr-2 not-italic">Reply</span>“{e.response}”
                     </a>
+                    {/* Narrow screens have no verdict column, so the verdict sits with the reply instead. */}
+                    <span className="sm:hidden mt-2 inline-flex">{chip}</span>
                     {e.rationale && <p className="mt-1 text-xs text-muted">{e.rationale}</p>}
                     {e.misconception && (
                       <p className="mt-2 text-xs rounded-lg px-3 py-2 bg-well border border-line">
@@ -83,17 +94,7 @@ export function ExchangesSection({
                       </p>
                     )}
                   </div>
-                  <span className="hidden sm:flex items-start justify-end">
-                    {v ? (
-                      <span className="chip" style={{ color: v.color, borderColor: "currentColor" }}>
-                        {v.label}
-                      </span>
-                    ) : (
-                      <span className="chip" title="Pattern engine cannot judge answers">
-                        not judged
-                      </span>
-                    )}
-                  </span>
+                  <span className="hidden sm:flex items-start justify-end">{chip}</span>
                 </article>
               );
             })}
