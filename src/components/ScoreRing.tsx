@@ -1,5 +1,5 @@
 "use client";
-import { useId, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import { AnimatedNumber } from "./Feedback";
 export function ScoreRing({
   value,
@@ -14,17 +14,9 @@ export function ScoreRing({
 }) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
-  const color = "var(--coral)";
-  const id = useId();
-  return (
+    return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90" aria-hidden>
-        <defs>
-          <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={color} />
-            <stop offset="100%" stopColor="var(--coral)" />
-          </linearGradient>
-        </defs>
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -38,7 +30,7 @@ export function ScoreRing({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke={`url(#${id})`}
+          stroke="var(--brand)"
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={`${c} ${c}`}
@@ -51,11 +43,12 @@ export function ScoreRing({
         <div>
           <div
             className="font-semibold tracking-tight tabular-nums"
+           
             style={{ fontSize: size * 0.28 }}
           >
             <AnimatedNumber value={value} />
           </div>
-          {label && <div className="eyebrow !text-[9px] -mt-0.5">{label}</div>}
+          {label && <div className="eyebrow -mt-0.5">{label}</div>}
         </div>
       </div>
     </div>

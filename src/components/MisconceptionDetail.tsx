@@ -38,7 +38,7 @@ export function MisconceptionDetail({ group }: { group: MisconceptionGroup }) {
         <div>
           <b>Try this</b>
           <p className="mt-1">{group.suggestedAction}</p>
-          <span className="text-[11px] text-dim">
+          <span className="text-[12px] text-dim">
             Teaching suggestion · verify against the recorded work
           </span>
         </div>
@@ -62,7 +62,7 @@ export function MisconceptionDetail({ group }: { group: MisconceptionGroup }) {
                   </p>
                 )}
                 <Link
-                  className="text-[11px] text-dim"
+                  className="text-[12px] text-dim"
                   href={
                     heard && e.segmentId
                       ? `/lessons/${e.lessonId}#seg-${e.segmentId}`

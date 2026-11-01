@@ -136,13 +136,13 @@ export function MisconceptionsWorkspace({
                         ))}
                       </div>
                       {g.heardCount > 0 && (
-                        <p className="text-[11px] text-dim mt-2">
+                        <p className="text-[12px] text-dim mt-2">
                           {g.reportedCount} teacher-reported · {g.heardCount}{" "}
                           heard in lessons
                         </p>
                       )}
                       {g.unknownCounts > 0 && (
-                        <p className="text-[11px] text-dim mt-2">
+                        <p className="text-[12px] text-dim mt-2">
                           {g.unknownCounts} observation(s) without a count
                         </p>
                       )}

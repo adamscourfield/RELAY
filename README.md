@@ -91,7 +91,7 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Anthropic
 
 ## Design
 
-Warm cream canvas, navy text and active navigation, coral primary actions, and rounded white cards, adapted from the supplied Together design specification. RELAY retains Geist and Geist Mono. The shared theme is `public/design-system.css`, imported by the app and the styled prototype at `/Cadence.html`. See [RELAY design system](docs/design/CADENCE_DESIGN_SYSTEM.md) for adaptations and preview instructions.
+Sage and forest-green palette, DM Sans body with Manrope headings, a 246px sidebar plus top bar, and flat white panels, adapted from the supplied design guide. Tokens live in `src/app/globals.css` and layout in `src/app/relay-design.css`; fonts are self-hosted. The old cream/navy/coral theme (`public/design-system.css`) remains only for the frozen prototype at `/Cadence.html`. See [RELAY design system](docs/design/RELAY_DESIGN_SYSTEM.md) for the deviations from the guide (three accessibility corrections).
 
 
 ## Local prototype preview and progress

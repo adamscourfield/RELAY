@@ -192,7 +192,7 @@ export function TrendChart({
           </span>
         ))}
       </div>
-      <details className="mt-2 text-[11px] text-dim">
+      <details className="mt-2 text-[12px] text-dim">
         <summary>Chart values</summary>
         <ul>
           {Array.from({ length: n }, (_, i) => (

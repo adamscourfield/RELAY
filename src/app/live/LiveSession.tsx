@@ -799,7 +799,7 @@ export function LiveSession() {
             )}
           </div>
           {mode === "demo" && (
-            <div className="mt-1 text-[11px] text-dim">
+            <div className="mt-1 text-[12px] text-dim">
               Demo · fast-forwarding silences
             </div>
           )}
@@ -898,7 +898,7 @@ export function LiveSession() {
         <div className="flex flex-col gap-4 min-w-0">
           <div className="glass p-5 flex items-center gap-5">
             <div className="relative size-12 shrink-0 grid place-items-center rounded-full bg-red/15 pulse-ring">
-              <span className="size-3 rounded-full bg-red shadow-[0_0_12px_var(--red)]" />
+              <span className="size-3 rounded-full bg-red" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="eyebrow">
@@ -976,7 +976,7 @@ export function LiveSession() {
                     key={s.id}
                     className="grid grid-cols-[44px_1fr] gap-3 rise"
                   >
-                    <span className="font-mono text-[11px] text-dim pt-1">
+                    <span className="font-mono text-[12px] text-dim pt-1">
                       {formatClock(s.start)}
                     </span>
                     <div className="text-[15px] leading-relaxed">
@@ -1002,7 +1002,7 @@ export function LiveSession() {
               })}
               {interim && (
                 <div className="grid grid-cols-[44px_1fr] gap-3">
-                  <span className="font-mono text-[11px] text-dim pt-1">…</span>
+                  <span className="font-mono text-[12px] text-dim pt-1">…</span>
                   <div className="text-[15px] leading-relaxed text-muted italic">
                     {interim}
                   </div>
@@ -1089,7 +1089,7 @@ export function LiveSession() {
                 ) : null;
               })}
             </div>
-            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted">
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-muted">
               {(
                 [
                   "higher-order",
@@ -1119,7 +1119,7 @@ export function LiveSession() {
               )}
               {nudges.map((n) => (
                 <div key={n.id} className="text-sm flex gap-2">
-                  <span className="font-mono text-[11px] text-dim pt-0.5 w-10 shrink-0">
+                  <span className="font-mono text-[12px] text-dim pt-0.5 w-10 shrink-0">
                     {formatClock(n.at)}
                   </span>
                   <span
@@ -1165,12 +1165,6 @@ function CircularTimer({
       style={{ width: size, height: size }}
     >
       <svg width={size} height={size} className="absolute inset-0 -rotate-90">
-        <defs>
-          <linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--cyan)" />
-            <stop offset="100%" stopColor="var(--violet)" />
-          </linearGradient>
-        </defs>
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -1184,7 +1178,7 @@ function CircularTimer({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="url(#ring-grad)"
+          stroke="var(--brand)"
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={c}
@@ -1194,7 +1188,7 @@ function CircularTimer({
       </svg>
       <span className="absolute inset-3 rounded-full bg-red/10 pulse-ring" />
       <span
-        className="relative flex flex-col items-center justify-center gap-1.5 rounded-full bg-panel-strong border border-line shadow-[0_10px_36px_-14px_rgba(15,23,42,0.4)]"
+        className="relative flex flex-col items-center justify-center gap-1.5 rounded-full bg-panel-strong border border-line"
         style={{ width: size - 56, height: size - 56 }}
       >
         {busyLabel ? (
@@ -1207,7 +1201,7 @@ function CircularTimer({
             <span className="text-[26px] font-mono font-semibold tabular-nums leading-none">
               {formatClock(clock)}
             </span>
-            <span className="text-[10px] uppercase tracking-[0.14em] text-dim">
+            <span className="text-[11px] uppercase tracking-[0.14em] text-dim">
               Tap to end
             </span>
           </>
@@ -1255,14 +1249,14 @@ function Gauge({
 }) {
   return (
     <div className="min-w-0">
-      <div className="eyebrow !text-[10px] truncate">{label}</div>
+      <div className="eyebrow !text-[11px] truncate">{label}</div>
       <div
         className="mt-1 text-2xl font-semibold font-mono tabular-nums transition-colors"
         style={{ color }}
       >
         {value}
       </div>
-      {sub && <div className="text-[11px] text-dim truncate">{sub}</div>}
+      {sub && <div className="text-[12px] text-dim truncate">{sub}</div>}
     </div>
   );
 }

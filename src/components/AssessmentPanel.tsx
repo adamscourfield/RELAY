@@ -117,7 +117,7 @@ export function AssessmentPanel({
                 <b className="text-[30px] text-pink tabular-nums">
                   {assessment.masteryPct}%
                 </b>
-                <p className="text-[11px] text-muted">
+                <p className="text-[12px] text-muted">
                   reached mastery (≥{assessment.masteryThreshold}%)
                 </p>
               </div>
@@ -125,7 +125,7 @@ export function AssessmentPanel({
                 <b className="text-[30px] tabular-nums">
                   {assessment.meanPct}%
                 </b>
-                <p className="text-[11px] text-muted">mean score</p>
+                <p className="text-[12px] text-muted">mean score</p>
               </div>
             </div>
             <div className="flex gap-2 mt-4">
@@ -141,7 +141,7 @@ export function AssessmentPanel({
                       title={`${i * 20}–${i === 4 ? 100 : i * 20 + 19}%: ${n} students`}
                     />
                   </div>
-                  <span className="text-[9px] font-mono text-dim">
+                  <span className="text-[11px] font-mono text-dim">
                     {i * 20}+
                   </span>
                 </div>
@@ -149,7 +149,7 @@ export function AssessmentPanel({
             </div>
             <div className="flex items-start gap-3 justify-between mt-5">
               <div className="eyebrow">Misconceptions</div>
-              <Link href={classHref} className="text-[11px] text-cyan">
+              <Link href={classHref} className="text-[12px] text-cyan">
                 See all for {yearGroup || "this class"} →
               </Link>
             </div>
@@ -316,7 +316,7 @@ export function AssessmentPanel({
         <Link href={classHref} className="block text-xs text-cyan mt-4">
           See misconceptions for {yearGroup || "this class"} →
         </Link>
-        <p className="text-[11px] text-dim mt-6">
+        <p className="text-[12px] text-dim mt-6">
           One lesson is one data point. Patterns across lessons matter more than
           a single verdict.
         </p>

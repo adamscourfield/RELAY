@@ -35,7 +35,6 @@ export function LessonTimeline({
                 style={{
                   left: pct(s.end),
                   background: QTYPE_COLOR[q.type],
-                  boxShadow: `0 0 8px ${QTYPE_COLOR[q.type]}`,
                 }}
               />
             );
@@ -52,17 +51,17 @@ export function LessonTimeline({
                 width: `max(2px, ${((s.end - s.start) / total) * 100}%)`,
                 background:
                   s.speaker === "student"
-                    ? "var(--pink)"
+                    ? "var(--data-student)"
                     : s.speaker === "unknown"
-                      ? "var(--dim)"
-                      : "linear-gradient(180deg, var(--cyan), var(--violet))",
+                      ? "var(--data-quiet)"
+                      : "var(--brand)",
                 opacity: s.speaker === "student" ? 0.9 : 0.75,
               }}
             />
           ))}
         </div>
       </div>
-      <div className="relative h-4 mt-1.5 font-mono text-[10px] text-dim">
+      <div className="relative h-4 mt-1.5 font-mono text-[11px] text-dim">
         {ticks.map((t) => (
           <span
             key={t}

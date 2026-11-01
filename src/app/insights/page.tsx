@@ -107,10 +107,10 @@ function Scatter({ points }: { points: { id: string; title: string; x: number; y
       <div className="relative aspect-[4/3] w-full rounded-xl border border-line bg-well overflow-hidden">
         <div className="absolute left-[55%] inset-y-0 w-px bg-line" />
         <div className="absolute top-[40%] inset-x-0 h-px bg-line" />
-        <span className="absolute left-2 top-2 text-[10px] text-dim">outcomes beat delivery</span>
-        <span className="absolute right-2 top-2 text-[10px] text-lime">aligned · strong</span>
-        <span className="absolute left-2 bottom-2 text-[10px] text-dim">aligned · weak</span>
-        <span className="absolute right-2 bottom-2 text-[10px] text-amber">didn&apos;t land</span>
+        <span className="absolute left-2 top-2 text-[11px] text-dim">outcomes beat delivery</span>
+        <span className="absolute right-2 top-2 text-[11px] text-lime">aligned · strong</span>
+        <span className="absolute left-2 bottom-2 text-[11px] text-dim">aligned · weak</span>
+        <span className="absolute right-2 bottom-2 text-[11px] text-amber">didn&apos;t land</span>
         {points.map((p) => (
           <Link
             key={p.id}
@@ -121,7 +121,7 @@ function Scatter({ points }: { points: { id: string; title: string; x: number; y
           />
         ))}
       </div>
-      <div className="flex justify-between text-[10px] text-dim mt-2 font-mono">
+      <div className="flex justify-between text-[11px] text-dim mt-2 font-mono">
         <span>delivery 0</span>
         <span>→ 100</span>
       </div>
@@ -142,7 +142,7 @@ function PhraseList({ title, color, items }: { title: string; color: string; ite
           {items.map((p) => (
             <li key={p.phrase} className="flex items-center justify-between gap-3 text-sm">
               <span className="truncate">“{p.phrase}”</span>
-              <span className="font-mono text-[11px] text-dim shrink-0">
+              <span className="font-mono text-[12px] text-dim shrink-0">
                 {p.high} vs {p.low}
               </span>
             </li>

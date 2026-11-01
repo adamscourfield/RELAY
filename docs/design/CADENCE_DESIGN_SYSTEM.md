@@ -1,5 +1,7 @@
 # Cadence design system — 12 October 2026
 
+> **Superseded for the app** by [RELAY_DESIGN_SYSTEM.md](RELAY_DESIGN_SYSTEM.md). This describes the frozen prototype only.
+
 Adapted from the supplied `DESIGN-SPEC.md`, preserved as `Together-design-reference.md`. The document is a visual reference; Together's authentication, account flows, file paths and generation workflow are not Cadence requirements.
 
 The user's explicit typography exception takes precedence: **keep Geist and Geist Mono**, including existing font loading, weights and fallback stacks. Do not introduce DM Serif Display or DM Sans.

@@ -287,7 +287,7 @@ export default async function LessonReport({
                     href={`#seg-${q.segmentId}`}
                     className="grid grid-cols-[44px_1fr] sm:grid-cols-[52px_1fr_110px_120px] items-center gap-3 px-4 py-3 hover:bg-panel-strong"
                   >
-                    <span className="font-mono text-[11px] text-dim">
+                    <span className="font-mono text-[12px] text-dim">
                       {seg ? formatClock(seg.start) : ""}
                     </span>
                     <span className="text-sm min-w-0">
@@ -334,7 +334,7 @@ export default async function LessonReport({
                           }}
                         />
                       </span>
-                      <span className="font-mono text-[11px] text-muted w-9 text-right">
+                      <span className="font-mono text-[12px] text-muted w-9 text-right">
                         {q.waitTime === null ? "—" : `${q.waitTime}s`}
                       </span>
                     </span>
@@ -407,9 +407,9 @@ function Metric({
 }) {
   return (
     <div className="min-w-0">
-      <div className="eyebrow !text-[10px]">{label}</div>
+      <div className="eyebrow !text-[11px]">{label}</div>
       <div className="mt-1 text-[16px] font-semibold tabular-nums">{value}</div>
-      {sub && <div className="text-[11px] text-dim">{sub}</div>}
+      {sub && <div className="text-[12px] text-dim">{sub}</div>}
     </div>
   );
 }

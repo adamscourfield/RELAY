@@ -113,7 +113,7 @@ export function BehaviourPanel({
             {context && (
               <Link
                 href={`/lessons/${lessonId}`}
-                className="block text-[11px] text-dim mt-3"
+                className="block text-[12px] text-dim mt-3"
               >
                 {context}
               </Link>

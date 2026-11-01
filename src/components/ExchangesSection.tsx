@@ -74,15 +74,15 @@ export function ExchangesSection({
               );
               return (
                 <article key={e.id} className="px-4 py-3 grid grid-cols-[44px_1fr] sm:grid-cols-[52px_1fr_110px] gap-x-3 gap-y-1">
-                  <span className="font-mono text-[11px] text-dim pt-0.5">{clock(firstReply)}</span>
+                  <span className="font-mono text-[12px] text-dim pt-0.5">{clock(firstReply)}</span>
                   <div className="min-w-0 text-sm">
                     <a href={`#seg-${e.questionSegmentId}`} className="text-muted hover:text-text block">
-                      <span className="eyebrow !text-[10px] mr-2">Asked</span>
+                      <span className="eyebrow !text-[11px] mr-2">Asked</span>
                       {e.question}
                       {e.nomination && <span className="chip ml-2 align-middle">named: {e.nomination.replace(/\?+$/, "")}</span>}
                     </a>
                     <a href={`#seg-${firstReply}`} className="block mt-1 italic text-text">
-                      <span className="eyebrow !text-[10px] mr-2 not-italic">Reply</span>“{e.response}”
+                      <span className="eyebrow !text-[11px] mr-2 not-italic">Reply</span>“{e.response}”
                     </a>
                     {/* Narrow screens have no verdict column, so the verdict sits with the reply instead. */}
                     <span className="sm:hidden mt-2 inline-flex">{chip}</span>
